@@ -4,41 +4,61 @@ import java.util.*
  * Score points by scanning valuable fish faster than your opponent.
  **/
 fun main(args: Array<String>) {
+    // First line: creatureCount an integer for the number of creatures in the game zone. Will always be 12.
+    // Next creatureCount lines: 3 integers describing each creature:
+    // creatureId for this creature's unique id.
+    // color (0 to 3) and type (0 to 2).
     val input = Scanner(System.`in`)
     val creatureCount = input.nextInt()
+    val creatures = mutableListOf<Creature>()
     for (i in 0 until creatureCount) {
         val creatureId = input.nextInt()
         val color = input.nextInt()
         val type = input.nextInt()
+        creatures.add(Creature(creatureId, color, type))
     }
+
+    val gameData = GameData(
+        creatureCount,
+        creatures
+    )
+    val gameLogic = GameLogic(gameData)
 
     // game loop
     while (true) {
         val myScore = input.nextInt()
         val foeScore = input.nextInt()
         val myScanCount = input.nextInt()
+        val myScannedCreatures = mutableListOf<Int>()
         for (i in 0 until myScanCount) {
             val creatureId = input.nextInt()
+            myScannedCreatures.add(creatureId)
         }
         val foeScanCount = input.nextInt()
+        val foeScannedCreatures = mutableListOf<Int>()
         for (i in 0 until foeScanCount) {
             val creatureId = input.nextInt()
+            foeScannedCreatures.add(creatureId)
         }
         val myDroneCount = input.nextInt()
+        val myDrones = mutableListOf<Drone>()
         for (i in 0 until myDroneCount) {
             val droneId = input.nextInt()
             val droneX = input.nextInt()
             val droneY = input.nextInt()
             val emergency = input.nextInt()
             val battery = input.nextInt()
+            myDrones.add(Drone(droneId, droneX, droneY, emergency, battery))
         }
         val foeDroneCount = input.nextInt()
+        val foeDrones = mutableListOf<Drone>()
         for (i in 0 until foeDroneCount) {
             val droneId = input.nextInt()
             val droneX = input.nextInt()
             val droneY = input.nextInt()
             val emergency = input.nextInt()
             val battery = input.nextInt()
+            foeDrones.add(Drone(droneId, droneX, droneY, emergency, battery))
         }
         val droneScanCount = input.nextInt()
         for (i in 0 until droneScanCount) {
@@ -46,12 +66,14 @@ fun main(args: Array<String>) {
             val creatureId = input.nextInt()
         }
         val visibleCreatureCount = input.nextInt()
+        val visibleCreatures = mutableListOf<VisibleCreature>()
         for (i in 0 until visibleCreatureCount) {
             val creatureId = input.nextInt()
             val creatureX = input.nextInt()
             val creatureY = input.nextInt()
             val creatureVx = input.nextInt()
             val creatureVy = input.nextInt()
+            visibleCreatures.add(VisibleCreature(creatureId, creatureX, creatureY, creatureVx, creatureVy))
         }
         val radarBlipCount = input.nextInt()
         for (i in 0 until radarBlipCount) {
@@ -59,17 +81,58 @@ fun main(args: Array<String>) {
             val creatureId = input.nextInt()
             val radar = input.next()
         }
-        val gameLogic = GameLogic()
+        val turnData =
+            TurnData(myScore, foeScore, myScannedCreatures, foeScannedCreatures, myDrones, foeDrones, visibleCreatures)
+
         for (i in 0 until myDroneCount) {
-            val command = gameLogic.turn()
+
+            val command = gameLogic.turn(turnData)
             println(command) // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
         }
     }
 }
 
-class GameLogic {
-
-    fun turn(): String {
-        return "WAIT 1"
+data class GameLogic(
+    val gameData: GameData
+) {
+    fun turn(turnData: TurnData): String {
+        return "WAIT 0"
     }
 }
+
+data class VisibleCreature(
+    val creatureId: Int,
+    val creatureX: Int,
+    val creatureY: Int,
+    val creatureVx: Int,
+    val creatureVy: Int
+)
+
+data class GameData(
+    val creatureCount: Int,
+    val creatures: List<Creature>
+)
+
+data class Creature(
+    val creatureId: Int,
+    val color: Int,
+    val type: Int
+)
+
+data class TurnData(
+    val myScore: Int,
+    val foeScore: Int,
+    val myScannedCreatures: List<Int>,
+    val foeScannedCreatures: List<Int>,
+    val myDrones: MutableList<Drone>,
+    val foeDrones: MutableList<Drone>,
+    val visibleCreatures: MutableList<VisibleCreature>,
+)
+
+data class Drone(
+    val droneId: Int,
+    val droneX: Int,
+    val droneY: Int,
+    val emergency: Int,
+    val battery: Int,
+)
