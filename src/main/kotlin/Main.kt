@@ -1,4 +1,5 @@
 import java.util.*
+import kotlin.math.abs
 
 /**
  * Score points by scanning valuable fish faster than your opponent.
@@ -48,7 +49,14 @@ fun main() {
             val droneY = input.nextInt()
             val emergency = input.nextInt()
             val battery = input.nextInt()
-            myDrones.add(Drone(droneId, droneX, droneY, emergency, battery))
+            myDrones.add(
+                Drone(
+                    droneId = droneId,
+                    dronePosition = Point2D(droneX, droneY),
+                    emergency = emergency,
+                    battery = battery
+                )
+            )
         }
         val foeDroneCount = input.nextInt()
         val foeDrones = mutableListOf<Drone>()
@@ -58,7 +66,14 @@ fun main() {
             val droneY = input.nextInt()
             val emergency = input.nextInt()
             val battery = input.nextInt()
-            foeDrones.add(Drone(droneId, droneX, droneY, emergency, battery))
+            foeDrones.add(
+                Drone(
+                    droneId = droneId,
+                    dronePosition = Point2D(droneX, droneY),
+                    emergency = emergency,
+                    battery = battery
+                )
+            )
         }
         val droneScanCount = input.nextInt()
         for (i in 0 until droneScanCount) {
@@ -73,7 +88,13 @@ fun main() {
             val creatureY = input.nextInt()
             val creatureVx = input.nextInt()
             val creatureVy = input.nextInt()
-            visibleCreatures.add(VisibleCreature(creatureId, creatureX, creatureY, creatureVx, creatureVy))
+            visibleCreatures.add(
+                VisibleCreature(
+                    creatureId = creatureId,
+                    creaturePosition = Point2D(creatureX, creatureY),
+                    creatureVelocity = Point2D(creatureVx, creatureVy)
+                )
+            )
         }
         val radarBlipCount = input.nextInt()
         for (i in 0 until radarBlipCount) {
@@ -102,10 +123,8 @@ data class GameLogic(
 
 data class VisibleCreature(
     val creatureId: Int,
-    val creatureX: Int,
-    val creatureY: Int,
-    val creatureVx: Int,
-    val creatureVy: Int
+    val creaturePosition: Point2D,
+    val creatureVelocity: Point2D,
 )
 
 data class GameData(
@@ -139,8 +158,21 @@ If the powerful light is not activated, the battery recharges by 1. The battery 
 */
 data class Drone(
     val droneId: Int,
-    val droneX: Int,
-    val droneY: Int,
+    val dronePosition: Point2D,
     val emergency: Int,
     val battery: Int,
 )
+
+data class Point2D(
+    val x: Int,
+    val y: Int
+) {
+    operator fun minus(other: Point2D): Point2D =
+        Point2D(x - other.x, y - other.y)
+
+    operator fun plus(other: Point2D): Point2D =
+        Point2D(x + other.x, y + other.y)
+
+    fun manhattenDistance(other: Point2D): Int =
+        abs(x - other.x) + abs(y - other.y)
+}
