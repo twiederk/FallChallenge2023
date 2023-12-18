@@ -163,7 +163,8 @@ data class Drone(
     val battery: Int,
 ) {
     fun nearestVisibleCreature(visibleCreatures: List<VisibleCreature>): VisibleCreature {
-        return visibleCreatures[0]
+        val minDistance = visibleCreatures.minOf { dronePosition.manhattenDistance(it.creaturePosition) }
+        return visibleCreatures.first { dronePosition.manhattenDistance(it.creaturePosition) == minDistance }
     }
 }
 
