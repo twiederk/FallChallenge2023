@@ -3,7 +3,7 @@ import java.util.*
 /**
  * Score points by scanning valuable fish faster than your opponent.
  **/
-fun main(args: Array<String>) {
+fun main() {
     // First line: creatureCount an integer for the number of creatures in the game zone. Will always be 12.
     // Next creatureCount lines: 3 integers describing each creature:
     // creatureId for this creature's unique id.
@@ -129,6 +129,14 @@ data class TurnData(
     val visibleCreatures: MutableList<VisibleCreature>,
 )
 
+/*
+Drones move towards the given point, with a maximum distance per turn of 600u. If the motors are not activated in a turn, the drone will sink by 300u.
+
+At the end of the turn, fish within a radius of 800u will be automatically scanned.
+
+If you have increased the power of your light, this radius becomes 2000u, but the battery drains by 5 points.
+If the powerful light is not activated, the battery recharges by 1. The battery has a capacity of 30 and is fully charged at the beginning of the game.
+*/
 data class Drone(
     val droneId: Int,
     val droneX: Int,
