@@ -59,12 +59,17 @@ fun main(args: Array<String>) {
             val creatureId = input.nextInt()
             val radar = input.next()
         }
+        val gameLogic = GameLogic()
         for (i in 0 until myDroneCount) {
-
-            // Write an action using println()
-            // To debug: System.err.println("Debug messages...");
-
-            println("WAIT 1") // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
+            val command = gameLogic.turn()
+            println(command) // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
         }
+    }
+}
+
+class GameLogic {
+
+    fun turn(): String {
+        return "WAIT 1"
     }
 }
