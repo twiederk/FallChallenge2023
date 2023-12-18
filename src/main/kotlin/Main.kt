@@ -118,7 +118,9 @@ data class GameLogic(
     val gameData: GameData
 ) {
     fun turn(turnData: TurnData): String {
-        return "WAIT 0"
+        val drone = turnData.myDrones[0]
+        val nearestCreature = drone.nearestCreatureToScan(turnData.visibleCreatures, turnData.myScannedCreatures)
+        return "MOVE ${nearestCreature.creaturePosition.x} ${nearestCreature.creaturePosition.y} 0"
     }
 }
 
@@ -147,9 +149,9 @@ data class TurnData(
     val foeScore: Int,
     val myScannedCreatures: List<Int>,
     val foeScannedCreatures: List<Int>,
-    val myDrones: MutableList<Drone>,
-    val foeDrones: MutableList<Drone>,
-    val visibleCreatures: MutableList<VisibleCreature>,
+    val myDrones: List<Drone>,
+    val foeDrones: List<Drone>,
+    val visibleCreatures: List<VisibleCreature>,
 )
 
 /*
