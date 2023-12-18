@@ -161,7 +161,11 @@ data class Drone(
     val dronePosition: Point2D,
     val emergency: Int,
     val battery: Int,
-)
+) {
+    fun nearestVisibleCreature(visibleCreatures: List<VisibleCreature>): VisibleCreature {
+        return visibleCreatures[0]
+    }
+}
 
 data class Point2D(
     val x: Int,
