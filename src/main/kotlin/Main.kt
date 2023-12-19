@@ -167,6 +167,7 @@ data class Drone(
     val battery: Int,
 ) {
     fun nearestCreatureToScan(visibleCreatures: List<VisibleCreature>, scannedCreatures: List<Int>): VisibleCreature {
+        check(visibleCreatures.isNotEmpty()) { "No visible creatures for drone $droneId" }
         val (creature, _) = visibleCreatures
             .filter { it.creatureId !in scannedCreatures }
             .map { Pair(it, dronePosition.manhattenDistance(it.creaturePosition)) }

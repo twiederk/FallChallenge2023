@@ -1,4 +1,5 @@
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.catchException
 import org.junit.jupiter.api.Test
 
 class DroneTest {
@@ -77,6 +78,18 @@ class DroneTest {
 
         // assert
         assertThat(nearestVisibleCreature).isEqualTo(visibleCreatures[0])
+    }
+
+    @Test
+    fun should_check_when_visible_creatures_is_empty() {
+        // arrange
+        val drone = Drone(droneId = 0, Point2D(3333, 500), 0, 30)
+
+        // act
+        val exception = catchException { drone.nearestCreatureToScan(listOf(), listOf()) }
+
+        // assert
+        assertThat(exception).hasMessage("No visible creatures for drone 0")
     }
 
 }
