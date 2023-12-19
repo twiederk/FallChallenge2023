@@ -114,7 +114,7 @@ fun main() {
     }
 }
 
-data class GameLogic(
+class GameLogic(
     val gameData: GameData
 ) {
     fun turn(turnData: TurnData): String {
