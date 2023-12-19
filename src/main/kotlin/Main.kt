@@ -129,9 +129,7 @@ data class VisibleCreature(
     val creatureId: Int,
     val creaturePosition: Point2D,
     val creatureVelocity: Point2D,
-) {
-    var distanceToDrone: Int = 0
-}
+)
 
 data class GameData(
     val creatureCount: Int,
@@ -169,10 +167,11 @@ data class Drone(
     val battery: Int,
 ) {
     fun nearestCreatureToScan(visibleCreatures: List<VisibleCreature>, scannedCreatures: List<Int>): VisibleCreature {
-        val notScannedCreatures = visibleCreatures
+        val (creature, _) = visibleCreatures
             .filter { it.creatureId !in scannedCreatures }
-        notScannedCreatures.forEach { it.distanceToDrone = dronePosition.manhattenDistance(it.creaturePosition) }
-        return notScannedCreatures.minBy { it.distanceToDrone }
+            .map { Pair(it, dronePosition.manhattenDistance(it.creaturePosition)) }
+            .minBy { it.second }
+        return creature
     }
 }
 
