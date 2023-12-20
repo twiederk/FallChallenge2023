@@ -119,9 +119,7 @@ class GameLogic(
     val gameData: GameData
 ) {
     fun turn(turnData: TurnData): String {
-        var output = ""
-        turnData.myDrones.forEach { output += it.turn(turnData) }
-        return output
+        return turnData.myDrones.fold("") { acc, drone -> acc + drone.turn(turnData) }
     }
 }
 
@@ -179,7 +177,6 @@ data class Drone(
     }
 
     fun turn(turnData: TurnData): String {
-        turnData.myScannedCreatures.forEach { printErr("$it") }
         if (turnData.visibleCreatures.isEmpty()) {
             return "WAIT 0"
         }
