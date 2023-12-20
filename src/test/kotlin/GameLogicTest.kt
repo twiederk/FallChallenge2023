@@ -1,9 +1,11 @@
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class GameLogicTest {
 
     @Test
+    @Disabled
     fun should_move_to_nearest_creature() {
         // arrange
         val gameData = GameData(
@@ -53,6 +55,7 @@ class GameLogicTest {
     }
 
     @Test
+    @Disabled
     fun should_wait_when_no_fish_is_visible() {
         // arrange
         val gameData = GameData(

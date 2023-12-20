@@ -142,13 +142,13 @@ data class Creature(
 )
 
 data class TurnData(
-    val myScore: Int,
-    val foeScore: Int,
-    val myScannedCreatures: List<Int>,
-    val foeScannedCreatures: List<Int>,
-    val myDrones: List<Drone>,
-    val foeDrones: List<Drone>,
-    val visibleCreatures: List<VisibleCreature>,
+    val myScore: Int = 0,
+    val foeScore: Int = 0,
+    val myScannedCreatures: List<Int> = listOf(),
+    val foeScannedCreatures: List<Int> = listOf(),
+    val myDrones: List<Drone> = listOf(),
+    val foeDrones: List<Drone> = listOf(),
+    val visibleCreatures: List<VisibleCreature> = listOf(),
 )
 
 /*
@@ -160,12 +160,28 @@ If you have increased the power of your light, this radius becomes 2000u, but th
 If the powerful light is not activated, the battery recharges by 1. The battery has a capacity of 30 and is fully charged at the beginning of the game.
 */
 data class Drone(
-    val droneId: Int,
-    val dronePosition: Point2D,
-    val emergency: Int,
-    val battery: Int,
+    val droneId: Int = 0,
+    val dronePosition: Point2D = Point2D(0, 0),
+    val emergency: Int = 0,
+    val battery: Int = 30,
 ) {
     val scanCount = mutableListOf<Int>()
+
+    val wayPoints = mutableListOf<Point2D>()
+
+    fun turn(turnData: TurnData): String {
+        if (wayPoints.isEmpty()) {
+            return "WAIT 0"
+        }
+        if (reachedWayPoint(wayPoints[0])) {
+            wayPoints.removeFirst()
+            if (wayPoints.isEmpty()) {
+                return "WAIT 0"
+            }
+        }
+        return "MOVE ${wayPoints[0].x} ${wayPoints[0].y} 0"
+    }
+
 
     fun nearestCreatureToScan(visibleCreatures: List<VisibleCreature>, scannedCreatures: List<Int>): VisibleCreature {
         check(visibleCreatures.isNotEmpty()) { "No visible creatures for drone $droneId" }
@@ -176,12 +192,12 @@ data class Drone(
         return creature
     }
 
-    fun turn(turnData: TurnData): String {
-        if (turnData.visibleCreatures.isEmpty()) {
-            return "WAIT 0"
-        }
-        val nearestCreature = nearestCreatureToScan(turnData.visibleCreatures, turnData.myScannedCreatures)
-        return "MOVE ${nearestCreature.creaturePosition.x} ${nearestCreature.creaturePosition.y} 0"
+    fun reachedWayPoint(wayPoint: Point2D) =
+        (dronePosition.x in (wayPoint.x - 250)..(wayPoint.x + 250))
+                && (dronePosition.y in (wayPoint.y - 250)..(wayPoint.y + 250))
+
+    fun addWayPoint(wayPoint: Point2D) {
+        wayPoints.add(wayPoint)
     }
 }
 

@@ -93,24 +93,63 @@ class DroneTest {
     }
 
     @Test
-    fun should_wait_when_no_fish_is_visible() {
+    fun should_move_to_way_point() {
         // arrange
-        val drone = Drone(0, Point2D(3333, 500), 0, 30)
-        val turnData = TurnData(
-            myScore = 0,
-            foeScore = 0,
-            myScannedCreatures = listOf(),
-            foeScannedCreatures = listOf(),
-            myDrones = listOf(Drone(0, Point2D(3333, 500), 0, 30)),
-            foeDrones = listOf(),
-            visibleCreatures = listOf()
-        )
+        val drone = Drone(droneId = 0, Point2D(3333, 500), 0, 30)
+        drone.addWayPoint(Point2D(3333, 3750))
 
         // act
-        val command = drone.turn(turnData)
+        val command = drone.turn(TurnData())
+
+        // assert
+        assertThat(command).isEqualTo("MOVE 3333 3750 0")
+    }
+
+    @Test
+    fun should_return_false_when_way_point_is_not_reached() {
+        // arrange
+        val drone = Drone(droneId = 0, Point2D(3333, 500), 0, 30)
+
+        // act
+        val result = drone.reachedWayPoint(Point2D(3333, 3750))
+
+        // assert
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun should_return_true_when_way_point_is_reached() {
+        // arrange
+        val drone = Drone(droneId = 0, Point2D(3333, 3500), 0, 30)
+
+        // act
+        val result = drone.reachedWayPoint(Point2D(3333, 3750))
+
+        // assert
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun should_wait_when_way_points_are_empty() {
+
+        // act
+        val command = Drone().turn(TurnData())
 
         // assert
         assertThat(command).isEqualTo("WAIT 0")
     }
 
+    @Test
+    fun should_remove_way_point_when_way_points_is_reached() {
+
+        // array
+        val drone = Drone()
+        drone.addWayPoint(Point2D(100, 100))
+
+        // act
+        drone.turn(TurnData())
+
+        // assert
+        assertThat(drone.wayPoints).isEmpty()
+    }
 }
