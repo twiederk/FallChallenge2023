@@ -92,4 +92,25 @@ class DroneTest {
         assertThat(exception).hasMessage("No visible creatures for drone 0")
     }
 
+    @Test
+    fun should_wait_when_no_fish_is_visible() {
+        // arrange
+        val drone = Drone(0, Point2D(3333, 500), 0, 30)
+        val turnData = TurnData(
+            myScore = 0,
+            foeScore = 0,
+            myScannedCreatures = listOf(),
+            foeScannedCreatures = listOf(),
+            myDrones = listOf(Drone(0, Point2D(3333, 500), 0, 30)),
+            foeDrones = listOf(),
+            visibleCreatures = listOf()
+        )
+
+        // act
+        val command = drone.turn(turnData)
+
+        // assert
+        assertThat(command).isEqualTo("WAIT 0")
+    }
+
 }

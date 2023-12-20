@@ -79,6 +79,7 @@ fun main() {
         for (i in 0 until droneScanCount) {
             val droneId = input.nextInt()
             val creatureId = input.nextInt()
+            myDrones.find { it.droneId == droneId }?.scanCount?.add(creatureId)
         }
         val visibleCreatureCount = input.nextInt()
         val visibleCreatures = mutableListOf<VisibleCreature>()
@@ -118,9 +119,9 @@ class GameLogic(
     val gameData: GameData
 ) {
     fun turn(turnData: TurnData): String {
-        val drone = turnData.myDrones[0]
-        val nearestCreature = drone.nearestCreatureToScan(turnData.visibleCreatures, turnData.myScannedCreatures)
-        return "MOVE ${nearestCreature.creaturePosition.x} ${nearestCreature.creaturePosition.y} 0"
+        var output = ""
+        turnData.myDrones.forEach { output += it.turn(turnData) }
+        return output
     }
 }
 
@@ -166,6 +167,8 @@ data class Drone(
     val emergency: Int,
     val battery: Int,
 ) {
+    val scanCount = mutableListOf<Int>()
+
     fun nearestCreatureToScan(visibleCreatures: List<VisibleCreature>, scannedCreatures: List<Int>): VisibleCreature {
         check(visibleCreatures.isNotEmpty()) { "No visible creatures for drone $droneId" }
         val (creature, _) = visibleCreatures
@@ -173,6 +176,15 @@ data class Drone(
             .map { Pair(it, dronePosition.manhattenDistance(it.creaturePosition)) }
             .minBy { it.second }
         return creature
+    }
+
+    fun turn(turnData: TurnData): String {
+        turnData.myScannedCreatures.forEach { printErr("$it") }
+        if (turnData.visibleCreatures.isEmpty()) {
+            return "WAIT 0"
+        }
+        val nearestCreature = nearestCreatureToScan(turnData.visibleCreatures, turnData.myScannedCreatures)
+        return "MOVE ${nearestCreature.creaturePosition.x} ${nearestCreature.creaturePosition.y} 0"
     }
 }
 
@@ -188,4 +200,8 @@ data class Point2D(
 
     fun manhattenDistance(other: Point2D): Int =
         abs(x - other.x) + abs(y - other.y)
+}
+
+fun printErr(errorMsg: String) {
+    System.err.println(errorMsg)
 }

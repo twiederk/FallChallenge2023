@@ -52,4 +52,30 @@ class GameLogicTest {
         assertThat(command).isEqualTo("MOVE 1195 3926 0")
     }
 
+    @Test
+    fun should_wait_when_no_fish_is_visible() {
+        // arrange
+        val gameData = GameData(
+            creatureCount = 0,
+            creatures = listOf()
+        )
+        val turnData = TurnData(
+            myScore = 0,
+            foeScore = 0,
+            myScannedCreatures = listOf(9),
+            foeScannedCreatures = listOf(),
+            myDrones = listOf(Drone(0, Point2D(3333, 500), 0, 30)),
+            foeDrones = listOf(),
+            visibleCreatures = listOf()
+        )
+
+        // act
+        val command = GameLogic(gameData).turn(turnData)
+
+        // assert
+        assertThat(command).isEqualTo("WAIT 0")
+    }
+
+
+
 }
