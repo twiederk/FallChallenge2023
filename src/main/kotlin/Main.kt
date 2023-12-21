@@ -5,10 +5,6 @@ import kotlin.math.abs
  * Score points by scanning valuable fish faster than your opponent.
  **/
 fun main() {
-    // First line: creatureCount an integer for the number of creatures in the game zone. Will always be 12.
-    // Next creatureCount lines: 3 integers describing each creature:
-    // creatureId for this creature's unique id.
-    // color (0 to 3) and type (0 to 2).
     val input = Scanner(System.`in`)
     val creatureCount = input.nextInt()
     val creatures = mutableMapOf<Int, Creature>()
@@ -121,19 +117,18 @@ fun main() {
                 radarBlips
             )
 
-        for (i in 0 until myDroneCount) {
-
-            val command = gameLogic.turn(turnData)
-            println(command) // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
-        }
+        val commands = gameLogic.turn(turnData)
+        commands.forEach { println(it) }
     }
 }
 
 class GameLogic(
-    val gameData: GameData
+    private val gameData: GameData
 ) {
-    fun turn(turnData: TurnData): String {
-        return turnData.myDrones.fold("") { acc, drone -> acc + drone.turn(turnData, gameData.creatures) }
+    fun turn(turnData: TurnData): List<String> {
+        val commands = mutableListOf<String>()
+        turnData.myDrones.forEach { commands.add(it.turn(turnData, gameData.creatures)) }
+        return commands
     }
 }
 

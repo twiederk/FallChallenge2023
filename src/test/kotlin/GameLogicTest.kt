@@ -1,70 +1,23 @@
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class GameLogicTest {
 
     @Test
-    @Disabled
-    fun should_move_to_nearest_creature() {
+    fun should_display_both_commands_when_two_drones_are_owned() {
         // arrange
         val turnData = TurnData(
-            myScore = 0,
-            foeScore = 0,
-            myScannedCreatures = listOf(9),
-            foeScannedCreatures = listOf(),
-            myDrones = listOf(Drone(0, Point2D(3333, 500), 0, 30)),
-            foeDrones = listOf(),
-            visibleCreatures = listOf(
-                VisibleCreature(
-                    id = 0,
-                    creatureId = 3,
-                    creaturePosition = Point2D(1195, 3926),
-                    creatureVelocity = Point2D(0, -200)
-                ),
-                VisibleCreature(
-                    id = 1,
-                    creatureId = 9,
-                    creaturePosition = Point2D(2691, 3920),
-                    creatureVelocity = Point2D(0, -200)
-                ),
-                VisibleCreature(
-                    id = 2,
-                    creatureId = 8,
-                    creaturePosition = Point2D(7308, 3920),
-                    creatureVelocity = Point2D(0, -200)
-                ),
-                VisibleCreature(
-                    id = 3,
-                    creatureId = 3,
-                    creaturePosition = Point2D(8804, 3926),
-                    creatureVelocity = Point2D(0, -200)
-                ),
-            ),
+            myDrones = listOf(
+                Drone(dronePosition = Point2D(2_000, 3_000)),
+                Drone(dronePosition = Point2D(4_000, 3_000)),
+            )
         )
 
         // act
-        val command = GameLogic(GameData()).turn(turnData)
+        val commands = GameLogic(GameData()).turn(turnData)
 
         // assert
-        assertThat(command).isEqualTo("MOVE 1195 3926 0")
+        assertThat(commands).containsExactly("WAIT 0", "WAIT 0")
     }
-
-    @Test
-    @Disabled
-    fun should_wait_when_no_fish_is_visible() {
-        // arrange
-        val turnData = TurnData(
-            myScannedCreatures = listOf(9),
-            myDrones = listOf(Drone(0, Point2D(3333, 500), 0, 30)),
-        )
-
-        // act
-        val command = GameLogic(GameData()).turn(turnData)
-
-        // assert
-        assertThat(command).isEqualTo("WAIT 0")
-    }
-
 
 }
