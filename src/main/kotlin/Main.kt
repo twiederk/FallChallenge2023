@@ -11,12 +11,12 @@ fun main() {
     // color (0 to 3) and type (0 to 2).
     val input = Scanner(System.`in`)
     val creatureCount = input.nextInt()
-    val creatures = mutableListOf<Creature>()
+    val creatures = mutableMapOf<Int, Creature>()
     for (i in 0 until creatureCount) {
         val creatureId = input.nextInt()
         val color = input.nextInt()
         val type = input.nextInt()
-        creatures.add(Creature(creatureId, color, type))
+        creatures[creatureId] = Creature(creatureId, color, type)
     }
 
     val gameData = GameData(
@@ -100,13 +100,13 @@ fun main() {
             )
         }
         val radarBlipCount = input.nextInt()
-        val radarBlip = mutableListOf<Triple<Int, Int, String>>()
+        val radarBlips = mutableListOf<RadarBlip>()
 
         for (i in 0 until radarBlipCount) {
             val droneId = input.nextInt()
             val creatureId = input.nextInt()
             val radar = input.next()
-            radarBlip.add(Triple(droneId, creatureId, radar))
+            radarBlips.add(RadarBlip(droneId, creatureId, radar))
         }
         val turnData =
             TurnData(
@@ -118,7 +118,7 @@ fun main() {
                 foeDrones,
                 dronesScans,
                 visibleCreatures,
-                radarBlip
+                radarBlips
             )
 
         for (i in 0 until myDroneCount) {
@@ -133,7 +133,7 @@ class GameLogic(
     val gameData: GameData
 ) {
     fun turn(turnData: TurnData): String {
-        return turnData.myDrones.fold("") { acc, drone -> acc + drone.turn(turnData) }
+        return turnData.myDrones.fold("") { acc, drone -> acc + drone.turn(turnData, gameData.creatures) }
     }
 }
 
@@ -146,13 +146,13 @@ data class VisibleCreature(
 
 data class GameData(
     val creatureCount: Int = 0,
-    val creatures: List<Creature> = listOf()
+    val creatures: Map<Int, Creature> = mapOf()
 )
 
 data class Creature(
-    val creatureId: Int,
-    val color: Int,
-    val type: Int
+    val creatureId: Int = 0,
+    val color: Int = 0,
+    val type: Int = 0
 )
 
 data class TurnData(
@@ -164,7 +164,7 @@ data class TurnData(
     val foeDrones: List<Drone> = listOf(),
     val dronesScans: List<Pair<Int, Int>> = listOf(),
     val visibleCreatures: List<VisibleCreature> = listOf(),
-    val radarBlip: List<Triple<Int, Int, String>> = listOf(),
+    val radarBlips: List<RadarBlip> = listOf(),
 )
 
 /*
@@ -184,23 +184,36 @@ data class Drone(
 
     var state: State = State.SEARCH
 
-    fun turn(turnData: TurnData): String {
+    fun turn(turnData: TurnData, creatures: Map<Int, Creature>): String {
         return when (state) {
-            State.SEARCH -> search(turnData)
+            State.SEARCH -> search(turnData, creatures)
             State.SURFACE -> surface()
         }
     }
 
-    private fun search(turnData: TurnData): String {
-        if (turnData.dronesScans.map { it.first }.contains(droneId)) {
+    private fun search(turnData: TurnData, creatures: Map<Int, Creature>): String {
+        if (hasScannedCreature(turnData)) {
             state = State.SURFACE
             return "MOVE ${dronePosition.x} 500 0"
         }
+
+        val direction = searchDirection(turnData, creatures)
+
         if (isHabitatZone()) {
             return "WAIT 1"
         }
         return "WAIT 0"
     }
+
+    fun searchDirection(turnData: TurnData, creatures: Map<Int, Creature>): Point2D {
+        val creaturesType0 = creatures.values.filter { it.type == 0 }
+        val creatureType0 = creaturesType0[0]
+        val radarBlip = turnData.radarBlips.find { it.creatureId == creatureType0.creatureId }
+            ?: throw IllegalArgumentException("Can't find radar blip of creature [$creatureType0]")
+        return dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D
+    }
+
+    private fun hasScannedCreature(turnData: TurnData) = turnData.dronesScans.map { it.first }.contains(droneId)
 
     private fun isHabitatZone(): Boolean {
         return dronePosition.y >= 2500
@@ -225,6 +238,12 @@ data class Drone(
         return creature
     }
 
+    fun nextCreatureToScan(creatures: Map<Int, Creature>, myScannedCreatures: List<Int>): Creature {
+        val notScannedCreatures = creatures.values.filterNot { it.creatureId in myScannedCreatures }
+        val sortedCreatures = notScannedCreatures.sortedBy { it.type }
+        return sortedCreatures[0]
+    }
+
     enum class State { SEARCH, SURFACE }
 
 }
@@ -241,6 +260,21 @@ data class Point2D(
 
     fun manhattenDistance(other: Point2D): Int =
         abs(x - other.x) + abs(y - other.y)
+}
+
+data class RadarBlip(
+    val droneId: Int = 0,
+    val creatureId: Int = 0,
+    val radar: String = "TL"
+) {
+    companion object {
+        val RADAR_BLIP_TO_DIRECTION = mapOf<String, Point2D>(
+            "TL" to Point2D(-500, -500),
+            "TR" to Point2D(500, -500),
+            "BL" to Point2D(-500, 500),
+            "BR" to Point2D(500, 500),
+        )
+    }
 }
 
 fun printErr(errorMsg: String) {

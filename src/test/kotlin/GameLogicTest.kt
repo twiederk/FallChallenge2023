@@ -8,10 +8,6 @@ class GameLogicTest {
     @Disabled
     fun should_move_to_nearest_creature() {
         // arrange
-        val gameData = GameData(
-            creatureCount = 0,
-            creatures = listOf()
-        )
         val turnData = TurnData(
             myScore = 0,
             foeScore = 0,
@@ -48,7 +44,7 @@ class GameLogicTest {
         )
 
         // act
-        val command = GameLogic(gameData).turn(turnData)
+        val command = GameLogic(GameData()).turn(turnData)
 
         // assert
         assertThat(command).isEqualTo("MOVE 1195 3926 0")
@@ -58,17 +54,13 @@ class GameLogicTest {
     @Disabled
     fun should_wait_when_no_fish_is_visible() {
         // arrange
-        val gameData = GameData(
-            creatureCount = 0,
-            creatures = listOf()
-        )
         val turnData = TurnData(
             myScannedCreatures = listOf(9),
             myDrones = listOf(Drone(0, Point2D(3333, 500), 0, 30)),
         )
 
         // act
-        val command = GameLogic(gameData).turn(turnData)
+        val command = GameLogic(GameData()).turn(turnData)
 
         // assert
         assertThat(command).isEqualTo("WAIT 0")
