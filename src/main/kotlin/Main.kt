@@ -117,8 +117,7 @@ fun main() {
                 radarBlips
             )
 
-        val commands = gameLogic.turn(turnData)
-        commands.forEach { println(it) }
+        gameLogic.turn(turnData).forEach { println(it) }
     }
 }
 
@@ -126,9 +125,7 @@ class GameLogic(
     private val gameData: GameData
 ) {
     fun turn(turnData: TurnData): List<String> {
-        val commands = mutableListOf<String>()
-        turnData.myDrones.forEach { commands.add(it.turn(turnData, gameData.creatures)) }
-        return commands
+        return turnData.myDrones.map { it.turn(turnData, gameData.creatures) }
     }
 }
 
