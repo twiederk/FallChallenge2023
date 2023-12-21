@@ -100,6 +100,52 @@ class DroneTest {
 
         // assert
         assertThat(drone.state).isEqualTo(Drone.State.SEARCH)
-
     }
+
+    @Test
+    fun should_surface_when_drone_scanned() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(2_000, 3_000))
+        val turnData = TurnData(
+            dronesScans = listOf(Pair(0, 10))
+        )
+
+        // act
+        val command = drone.turn(turnData)
+
+        // assert
+        assertThat(drone.state).isEqualTo(Drone.State.SURFACE)
+        assertThat(command).isEqualTo("MOVE 2000 500 0")
+    }
+
+    @Test
+    fun should_continue_to_surface_when_surface_not_reached() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(2_000, 3_000))
+        drone.state = Drone.State.SURFACE
+
+        // act
+        val command = drone.turn(TurnData())
+
+        // assert
+        assertThat(drone.state).isEqualTo(Drone.State.SURFACE)
+        assertThat(command).isEqualTo("MOVE 2000 500 0")
+    }
+
+
+    @Test
+    fun should_search_when_surface_is_reached() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(2_000, 500))
+        drone.state = Drone.State.SURFACE
+
+        // act
+        val command = drone.turn(TurnData())
+
+        // assert
+        assertThat(drone.state).isEqualTo(Drone.State.SEARCH)
+        assertThat(command).isEqualTo("WAIT 0")
+    }
+
+
 }

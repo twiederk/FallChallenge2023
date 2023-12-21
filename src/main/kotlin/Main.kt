@@ -185,9 +185,29 @@ data class Drone(
     var state: State = State.SEARCH
 
     fun turn(turnData: TurnData): String {
-        return "WAIT 0"
+        return when (state) {
+            State.SEARCH -> search(turnData)
+            State.SURFACE -> surface()
+        }
     }
 
+    private fun search(turnData: TurnData): String {
+        if (turnData.dronesScans.map { it.first }.contains(droneId)) {
+            state = State.SURFACE
+            return "MOVE ${dronePosition.x} 500 0"
+        }
+        return "SEARCH"
+    }
+
+    private fun surface(): String {
+        if (isSurfaced()) {
+            state = State.SEARCH
+            return "WAIT 0"
+        }
+        return "MOVE ${dronePosition.x} 500 0"
+    }
+
+    private fun isSurfaced(): Boolean = dronePosition.y <= 500
 
     fun nearestCreatureToScan(visibleCreatures: List<VisibleCreature>, scannedCreatures: List<Int>): VisibleCreature {
         check(visibleCreatures.isNotEmpty()) { "No visible creatures for drone $droneId" }
@@ -198,7 +218,7 @@ data class Drone(
         return creature
     }
 
-    enum class State { SEARCH }
+    enum class State { SEARCH, SURFACE }
 
 }
 
