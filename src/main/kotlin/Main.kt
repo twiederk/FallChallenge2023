@@ -182,6 +182,8 @@ data class Drone(
     val battery: Int = 30,
 ) {
 
+    var state: State = State.SEARCH
+
     fun turn(turnData: TurnData): String {
         return "WAIT 0"
     }
@@ -195,6 +197,8 @@ data class Drone(
             .minBy { it.second }
         return creature
     }
+
+    enum class State { SEARCH }
 
 }
 

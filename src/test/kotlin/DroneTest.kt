@@ -92,4 +92,14 @@ class DroneTest {
         assertThat(exception).hasMessage("No visible creatures for drone 0")
     }
 
+    @Test
+    fun should_search_when_initialized() {
+
+        // act
+        val drone = Drone()
+
+        // assert
+        assertThat(drone.state).isEqualTo(Drone.State.SEARCH)
+
+    }
 }
