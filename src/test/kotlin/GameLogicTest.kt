@@ -44,7 +44,7 @@ class GameLogicTest {
                     creaturePosition = Point2D(8804, 3926),
                     creatureVelocity = Point2D(0, -200)
                 ),
-            )
+            ),
         )
 
         // act
@@ -63,13 +63,8 @@ class GameLogicTest {
             creatures = listOf()
         )
         val turnData = TurnData(
-            myScore = 0,
-            foeScore = 0,
             myScannedCreatures = listOf(9),
-            foeScannedCreatures = listOf(),
             myDrones = listOf(Drone(0, Point2D(3333, 500), 0, 30)),
-            foeDrones = listOf(),
-            visibleCreatures = listOf()
         )
 
         // act
@@ -78,7 +73,6 @@ class GameLogicTest {
         // assert
         assertThat(command).isEqualTo("WAIT 0")
     }
-
 
 
 }

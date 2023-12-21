@@ -76,10 +76,11 @@ fun main() {
             )
         }
         val droneScanCount = input.nextInt()
+        val dronesScans = mutableListOf<Pair<Int, Int>>()
         for (i in 0 until droneScanCount) {
             val droneId = input.nextInt()
             val creatureId = input.nextInt()
-            myDrones.find { it.droneId == droneId }?.scanCount?.add(creatureId)
+            dronesScans.add(Pair(droneId, creatureId))
         }
         val visibleCreatureCount = input.nextInt()
         val visibleCreatures = mutableListOf<VisibleCreature>()
@@ -99,13 +100,26 @@ fun main() {
             )
         }
         val radarBlipCount = input.nextInt()
+        val radarBlip = mutableListOf<Triple<Int, Int, String>>()
+
         for (i in 0 until radarBlipCount) {
             val droneId = input.nextInt()
             val creatureId = input.nextInt()
             val radar = input.next()
+            radarBlip.add(Triple(droneId, creatureId, radar))
         }
         val turnData =
-            TurnData(myScore, foeScore, myScannedCreatures, foeScannedCreatures, myDrones, foeDrones, visibleCreatures)
+            TurnData(
+                myScore,
+                foeScore,
+                myScannedCreatures,
+                foeScannedCreatures,
+                myDrones,
+                foeDrones,
+                dronesScans,
+                visibleCreatures,
+                radarBlip
+            )
 
         for (i in 0 until myDroneCount) {
 
@@ -131,8 +145,8 @@ data class VisibleCreature(
 )
 
 data class GameData(
-    val creatureCount: Int,
-    val creatures: List<Creature>
+    val creatureCount: Int = 0,
+    val creatures: List<Creature> = listOf()
 )
 
 data class Creature(
@@ -148,7 +162,9 @@ data class TurnData(
     val foeScannedCreatures: List<Int> = listOf(),
     val myDrones: List<Drone> = listOf(),
     val foeDrones: List<Drone> = listOf(),
+    val dronesScans: List<Pair<Int, Int>> = listOf(),
     val visibleCreatures: List<VisibleCreature> = listOf(),
+    val radarBlip: List<Triple<Int, Int, String>> = listOf(),
 )
 
 /*
@@ -165,8 +181,6 @@ data class Drone(
     val emergency: Int = 0,
     val battery: Int = 30,
 ) {
-    val scanCount = mutableListOf<Int>()
-
     val wayPoints = mutableListOf<Point2D>()
 
     fun turn(turnData: TurnData): String {
