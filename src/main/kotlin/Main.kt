@@ -196,7 +196,14 @@ data class Drone(
             state = State.SURFACE
             return "MOVE ${dronePosition.x} 500 0"
         }
+        if (isHabitatZone()) {
+            return "WAIT 1"
+        }
         return "WAIT 0"
+    }
+
+    private fun isHabitatZone(): Boolean {
+        return dronePosition.y >= 2500
     }
 
     private fun surface(): String {

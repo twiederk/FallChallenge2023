@@ -147,5 +147,28 @@ class DroneTest {
         assertThat(command).isEqualTo("WAIT 0")
     }
 
+    @Test
+    fun should_turn_on_power_light_when_in_habitat_zone() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(0, 3_000))
+
+        // act
+        val command = drone.turn(TurnData())
+
+        // assert
+        assertThat(command).isEqualTo("WAIT 1")
+    }
+
+    @Test
+    fun should_turn_off_power_light_when_not_in_habitat_zone() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(0, 2_000))
+
+        // act
+        val command = drone.turn(TurnData())
+
+        // assert
+        assertThat(command).isEqualTo("WAIT 0")
+    }
 
 }
