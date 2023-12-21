@@ -196,7 +196,7 @@ data class Drone(
             state = State.SURFACE
             return "MOVE ${dronePosition.x} 500 0"
         }
-        return "SEARCH"
+        return "WAIT 0"
     }
 
     private fun surface(): String {
