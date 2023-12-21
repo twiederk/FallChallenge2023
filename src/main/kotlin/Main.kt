@@ -197,13 +197,13 @@ data class Drone(
             return "MOVE ${dronePosition.x} 500 0"
         }
 
-        val direction = searchDirection(turnData, creatures)
+        val direction = searchDirection(turnData, creatures) ?: return "WAIT 0"
         val light = light()
         return "MOVE ${direction.x} ${direction.y} $light"
     }
 
-    fun searchDirection(turnData: TurnData, creatures: Map<Int, Creature>): Point2D {
-        val creature = nextCreatureToScan(creatures, turnData.myScannedCreatures)
+    fun searchDirection(turnData: TurnData, creatures: Map<Int, Creature>): Point2D? {
+        val creature = nextCreatureToScan(creatures, turnData.myScannedCreatures) ?: return null
         val radarBlip = turnData.radarBlips.find { it.creatureId == creature.creatureId }
             ?: throw IllegalArgumentException("Can't find radar blip of creature [$creature]")
         return dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D
@@ -234,10 +234,11 @@ data class Drone(
         return creature
     }
 
-    fun nextCreatureToScan(creatures: Map<Int, Creature>, myScannedCreatures: List<Int>): Creature {
+    fun nextCreatureToScan(creatures: Map<Int, Creature>, myScannedCreatures: List<Int>): Creature? {
         val notScannedCreatures = creatures.values.filterNot { it.creatureId in myScannedCreatures }
         val sortedCreatures = notScannedCreatures.sortedBy { it.type }
-        return sortedCreatures[0]
+        if (sortedCreatures.isEmpty()) return null
+        return sortedCreatures.first()
     }
 
     fun light(): Int {

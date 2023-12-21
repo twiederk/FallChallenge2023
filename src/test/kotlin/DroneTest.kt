@@ -210,4 +210,26 @@ class DroneTest {
         assertThat(creature).isEqualTo(creatures[3])
     }
 
+    @Test
+    fun should_wait_when_all_creatures_are_scanned() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(2_000, 3_000))
+        val creatures = mapOf(
+            0 to Creature(creatureId = 0, color = 0, type = 2),
+            1 to Creature(creatureId = 1, color = 0, type = 1),
+            2 to Creature(creatureId = 2, color = 1, type = 1),
+            3 to Creature(creatureId = 3, color = 0, type = 0),
+        )
+        val turnData = TurnData(
+            myScannedCreatures = listOf(0, 1, 2, 3)
+        )
+
+
+        // act
+        val command = drone.turn(turnData, creatures)
+
+        // assert
+        assertThat(command).isEqualTo("WAIT 0")
+    }
+
 }
