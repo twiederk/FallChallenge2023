@@ -181,19 +181,9 @@ data class Drone(
     val emergency: Int = 0,
     val battery: Int = 30,
 ) {
-    val wayPoints = mutableListOf<Point2D>()
 
     fun turn(turnData: TurnData): String {
-        if (wayPoints.isEmpty()) {
-            return "WAIT 0"
-        }
-        if (reachedWayPoint(wayPoints[0])) {
-            wayPoints.removeFirst()
-            if (wayPoints.isEmpty()) {
-                return "WAIT 0"
-            }
-        }
-        return "MOVE ${wayPoints[0].x} ${wayPoints[0].y} 0"
+        return "WAIT 0"
     }
 
 
@@ -206,13 +196,6 @@ data class Drone(
         return creature
     }
 
-    fun reachedWayPoint(wayPoint: Point2D) =
-        (dronePosition.x in (wayPoint.x - 250)..(wayPoint.x + 250))
-                && (dronePosition.y in (wayPoint.y - 250)..(wayPoint.y + 250))
-
-    fun addWayPoint(wayPoint: Point2D) {
-        wayPoints.add(wayPoint)
-    }
 }
 
 data class Point2D(
