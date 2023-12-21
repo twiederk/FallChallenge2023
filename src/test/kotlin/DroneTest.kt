@@ -1,6 +1,5 @@
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchException
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class DroneTest {
@@ -149,29 +148,27 @@ class DroneTest {
     }
 
     @Test
-    @Disabled
     fun should_turn_on_power_light_when_in_habitat_zone() {
         // arrange
         val drone = Drone(dronePosition = Point2D(0, 3_000))
 
         // act
-        val command = drone.turn(TurnData(), mapOf(0 to Creature()))
+        val command = drone.light()
 
         // assert
-        assertThat(command).isEqualTo("WAIT 1")
+        assertThat(command).isEqualTo(1)
     }
 
     @Test
-    @Disabled
     fun should_turn_off_power_light_when_not_in_habitat_zone() {
         // arrange
         val drone = Drone(dronePosition = Point2D(0, 2_000))
 
         // act
-        val command = drone.turn(TurnData(), mapOf(0 to Creature()))
+        val light = drone.light()
 
         // assert
-        assertThat(command).isEqualTo("WAIT 0")
+        assertThat(light).isEqualTo(0)
     }
 
     @Test

@@ -198,18 +198,14 @@ data class Drone(
         }
 
         val direction = searchDirection(turnData, creatures)
-
-        if (isHabitatZone()) {
-            return "WAIT 1"
-        }
-        return "WAIT 0"
+        val light = light()
+        return "MOVE ${direction.x} ${direction.y} $light"
     }
 
     fun searchDirection(turnData: TurnData, creatures: Map<Int, Creature>): Point2D {
-        val creaturesType0 = creatures.values.filter { it.type == 0 }
-        val creatureType0 = creaturesType0[0]
-        val radarBlip = turnData.radarBlips.find { it.creatureId == creatureType0.creatureId }
-            ?: throw IllegalArgumentException("Can't find radar blip of creature [$creatureType0]")
+        val creature = nextCreatureToScan(creatures, turnData.myScannedCreatures)
+        val radarBlip = turnData.radarBlips.find { it.creatureId == creature.creatureId }
+            ?: throw IllegalArgumentException("Can't find radar blip of creature [$creature]")
         return dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D
     }
 
@@ -242,6 +238,11 @@ data class Drone(
         val notScannedCreatures = creatures.values.filterNot { it.creatureId in myScannedCreatures }
         val sortedCreatures = notScannedCreatures.sortedBy { it.type }
         return sortedCreatures[0]
+    }
+
+    fun light(): Int {
+        if (isHabitatZone()) return 1
+        return 0
     }
 
     enum class State { SEARCH, SURFACE }
