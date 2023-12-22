@@ -188,4 +188,22 @@ class DroneTest {
         assertThat(result).isTrue()
     }
 
+    @Test
+    fun should_flee_from_monster_and_turn_light_off() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(1_000, 2_000))
+        val creatures = Creatures(
+            creatures = mapOf(0 to Creature(0, -1, -1))
+        )
+        val visibleCreatures = VisibleCreatures()
+        visibleCreatures.add(VisibleCreature(creaturePosition = Point2D(2_000, 3_000)))
+        val turnData = TurnData(visibleCreatures = visibleCreatures)
+
+        // act
+        val command = drone.turn(turnData, creatures)
+
+        // assert
+        assertThat(command).isEqualTo("WAIT 0")
+    }
+
 }

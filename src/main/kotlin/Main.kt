@@ -174,6 +174,9 @@ data class Drone(
 ) {
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
+        if (turnData.visibleCreatures.monsters(creatures).isNotEmpty()) {
+            return "WAIT 0"
+        }
         if (isAllCreaturesScanned(turnData)) {
             return "MOVE ${dronePosition.x} 500 0"
         }
