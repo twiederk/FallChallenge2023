@@ -268,7 +268,7 @@ data class RadarBlip(
     val radar: String = "TL"
 ) {
     companion object {
-        val RADAR_BLIP_TO_DIRECTION = mapOf<String, Point2D>(
+        val RADAR_BLIP_TO_DIRECTION = mapOf(
             "TL" to Point2D(-500, -500),
             "TR" to Point2D(500, -500),
             "BL" to Point2D(-500, 500),
@@ -277,6 +277,7 @@ data class RadarBlip(
     }
 }
 
+@Suppress("unused")
 fun printErr(errorMsg: String) {
     System.err.println(errorMsg)
 }
