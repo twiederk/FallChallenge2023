@@ -246,7 +246,7 @@ data class Drone(
         val scansInMyDrones = turnData.dronesScans.filter { it.droneId in myDroneIds }.map { it.creatureId }
         scannedCreatures.addAll(scansInMyDrones)
         val creaturesOnScreen = turnData.radarBlips.map { it.creatureId }.toSet()
-        return creaturesOnScreen.size == scannedCreatures.size
+        return scannedCreatures.size >= creaturesOnScreen.size
     }
 
     enum class State { SEARCH, SURFACE }

@@ -248,7 +248,7 @@ class DroneTest {
     }
 
     @Test
-    fun should_wait_when_all_creatures_are_scanned() {
+    fun should_wait_when_all_creature_scans_are_saved() {
         // arrange
         val drone = Drone(dronePosition = Point2D(2_000, 3_000))
         val creatures = mapOf(
@@ -315,4 +315,36 @@ class DroneTest {
         // assert
         assertThat(result).isTrue()
     }
+
+    @Test
+    fun should_return_true_when_more_creatures_scanned_than_on_screen() {
+        // arrange
+        val turnData = TurnData(
+            myDrones = listOf(
+                Drone(droneId = 0),
+                Drone(droneId = 1),
+            ),
+            dronesScans = listOf(
+                DroneScan(droneId = 0, creatureId = 1), // friend drone
+                DroneScan(droneId = 0, creatureId = 2), // friend drone
+                DroneScan(droneId = 1, creatureId = 3), // friend drone
+                DroneScan(droneId = 2, creatureId = 3), // enemy drone
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 1),
+                RadarBlip(0, 2),
+                RadarBlip(1, 1),
+                RadarBlip(1, 2),
+                RadarBlip(2, 1),
+                RadarBlip(2, 2),
+            ),
+        )
+
+        // act
+        val result = Drone().isAllCreaturesScanned(turnData)
+
+        // assert
+        assertThat(result).isTrue()
+    }
+
 }
