@@ -142,6 +142,10 @@ data class Creatures(
         return creatures[creatureId] ?: throw IllegalArgumentException("Can't find creature with id: $creatureId")
     }
 
+    fun monsterIds(): List<Int> {
+        return creatures.values.filter { it.type == -1 }.map { it.creatureId }
+    }
+
     val values: Collection<Creature> = creatures.values
 }
 
