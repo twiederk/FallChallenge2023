@@ -223,15 +223,18 @@ class DroneTest {
             2 to Creature(creatureId = 2, color = 1, type = 1),
             3 to Creature(creatureId = 3, color = 0, type = 0),
         )
-        val myScannedCreatures = listOf<Int>()
-        val radarBlips = listOf(
-            RadarBlip(0, 0, "TL"),
-            RadarBlip(0, 1, "TL"),
-            RadarBlip(0, 2, "TL"),
+        val turnData = TurnData(
+            myScannedCreatures = listOf(),
+            radarBlips = listOf(
+                RadarBlip(0, 0, "TL"),
+                RadarBlip(0, 1, "TL"),
+                RadarBlip(0, 2, "TL"),
+            )
+
         )
 
         // act
-        val creature = drone.nextCreatureToScan(creatures, myScannedCreatures, radarBlips)
+        val creature = drone.nextCreatureToScan(creatures, turnData)
 
         // assert
         assertThat(creature).isEqualTo(creatures[1])
@@ -250,7 +253,6 @@ class DroneTest {
         val turnData = TurnData(
             myScannedCreatures = listOf(0, 1, 2, 3)
         )
-
 
         // act
         val command = drone.turn(turnData, creatures)
