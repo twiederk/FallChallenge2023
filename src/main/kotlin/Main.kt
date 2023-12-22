@@ -174,10 +174,6 @@ data class Drone(
 ) {
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
-        return search(turnData, creatures)
-    }
-
-    private fun search(turnData: TurnData, creatures: Creatures): String {
         if (isAllCreaturesScanned(turnData)) {
             return "MOVE ${dronePosition.x} 500 0"
         }
