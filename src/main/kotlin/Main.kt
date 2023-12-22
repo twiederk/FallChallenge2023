@@ -88,7 +88,6 @@ fun main() {
             val creatureVy = input.nextInt()
             visibleCreatures.add(
                 VisibleCreature(
-                    id = i,
                     creatureId = creatureId,
                     creaturePosition = Point2D(creatureX, creatureY),
                     creatureVelocity = Point2D(creatureVx, creatureVy)
@@ -130,10 +129,9 @@ class GameLogic(
 }
 
 data class VisibleCreature(
-    val id: Int,
-    val creatureId: Int,
-    val creaturePosition: Point2D,
-    val creatureVelocity: Point2D,
+    val creatureId: Int = 0,
+    val creaturePosition: Point2D = Point2D(0, 0),
+    val creatureVelocity: Point2D = Point2D(0, 0),
 )
 
 data class GameData(
@@ -286,8 +284,3 @@ data class DroneScan(
     val droneId: Int = 0,
     val creatureId: Int = 0
 )
-
-@Suppress("unused")
-fun printErr(errorMsg: String) {
-    System.err.println(errorMsg)
-}
