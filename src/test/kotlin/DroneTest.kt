@@ -103,7 +103,7 @@ class DroneTest {
     }
 
     @Test
-    fun should_surface_when_drone_scanned() {
+    fun should_surface_when_all_creatures_scanned() {
         // arrange
         val drone = Drone(dronePosition = Point2D(2_000, 3_000))
         val turnData = TurnData(
@@ -268,4 +268,51 @@ class DroneTest {
         assertThat(command).isEqualTo("WAIT 0")
     }
 
+    @Test
+    fun should_return_false_when_not_all_creatures_scanned() {
+        // arrange
+        val turnData = TurnData(
+            myDrones = listOf(
+                Drone(droneId = 0),
+                Drone(droneId = 1),
+            ),
+            myScannedCreatures = listOf(1, 2),
+            dronesScans = listOf(
+                DroneScan(droneId = 1, creatureId = 3), // friendly drone
+                DroneScan(droneId = 2, creatureId = 3), // enemy drone
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 1),
+                RadarBlip(0, 2),
+                RadarBlip(0, 3),
+                RadarBlip(0, 4),
+                RadarBlip(1, 1),
+                RadarBlip(1, 2),
+                RadarBlip(1, 3),
+                RadarBlip(1, 4),
+                RadarBlip(2, 1),
+                RadarBlip(2, 2),
+                RadarBlip(2, 3),
+                RadarBlip(2, 4),
+            ),
+        )
+
+        // act
+        val result = Drone().isAllCreaturesScanned(turnData)
+
+        // assert
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun should_return_true_when_all_creatures_scanned() {
+        // arrange
+        val turnData = TurnData()
+
+        // act
+        val result = Drone().isAllCreaturesScanned(turnData)
+
+        // assert
+        assertThat(result).isTrue()
+    }
 }

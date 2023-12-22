@@ -10,6 +10,9 @@ class GameLogicTest {
             myDrones = listOf(
                 Drone(dronePosition = Point2D(2_000, 3_000)),
                 Drone(dronePosition = Point2D(4_000, 3_000)),
+            ),
+            radarBlips = listOf(
+                RadarBlip()
             )
         )
 

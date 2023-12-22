@@ -176,7 +176,7 @@ data class Drone(
     }
 
     private fun search(turnData: TurnData, creatures: Map<Int, Creature>): String {
-        if (hasScannedCreature(turnData)) {
+        if (isAllCreaturesScanned(turnData)) {
             state = State.SURFACE
             return "MOVE ${dronePosition.x} 500 0"
         }
@@ -192,8 +192,6 @@ data class Drone(
             ?: throw IllegalArgumentException("Can't find radar blip of creature [$creature]")
         return dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D
     }
-
-    private fun hasScannedCreature(turnData: TurnData) = turnData.dronesScans.map { it.droneId }.contains(droneId)
 
     private fun isHabitatZone(): Boolean {
         return dronePosition.y >= 2500
@@ -237,6 +235,18 @@ data class Drone(
     fun light(): Int {
         if (isHabitatZone()) return 1
         return 0
+    }
+
+    fun isAllCreaturesScanned(turnData: TurnData): Boolean {
+//        creature must be on screen (in radarBlips)
+//        must be (in saved scans or in droneScans)
+        val scannedCreatures = mutableSetOf<Int>()
+        scannedCreatures.addAll(turnData.myScannedCreatures)
+        val myDroneIds = turnData.myDrones.map { it.droneId }
+        val scansInMyDrones = turnData.dronesScans.filter { it.droneId in myDroneIds }.map { it.creatureId }
+        scannedCreatures.addAll(scansInMyDrones)
+        val creaturesOnScreen = turnData.radarBlips.map { it.creatureId }.toSet()
+        return creaturesOnScreen.size == scannedCreatures.size
     }
 
     enum class State { SEARCH, SURFACE }
