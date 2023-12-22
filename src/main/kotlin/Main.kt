@@ -199,15 +199,6 @@ data class Drone(
         return dronePosition.y >= 2500
     }
 
-    fun nearestCreatureToScan(visibleCreatures: List<VisibleCreature>, scannedCreatures: List<Int>): VisibleCreature {
-        check(visibleCreatures.isNotEmpty()) { "No visible creatures for drone $droneId" }
-        val (creature, _) = visibleCreatures
-            .filter { it.creatureId !in scannedCreatures }
-            .map { Pair(it, dronePosition.manhattenDistance(it.creaturePosition)) }
-            .minBy { it.second }
-        return creature
-    }
-
     fun nextCreatureToScan(
         turnData: TurnData,
         creatures: Creatures
