@@ -1,5 +1,4 @@
 import java.util.*
-import kotlin.math.abs
 
 /**
  * Score points by scanning valuable fish faster than your opponent.
@@ -243,9 +242,6 @@ data class Point2D(
 
     operator fun plus(other: Point2D): Point2D =
         Point2D(x + other.x, y + other.y)
-
-    fun manhattenDistance(other: Point2D): Int =
-        abs(x - other.x) + abs(y - other.y)
 }
 
 data class RadarBlip(
