@@ -79,7 +79,7 @@ fun main() {
             dronesScans.add(DroneScan(droneId, creatureId))
         }
         val visibleCreatureCount = input.nextInt()
-        val visibleCreatures = mutableListOf<VisibleCreature>()
+        val visibleCreatures = VisibleCreatures()
         for (i in 0 until visibleCreatureCount) {
             val creatureId = input.nextInt()
             val creatureX = input.nextInt()
@@ -163,7 +163,7 @@ data class TurnData(
     val myDrones: List<Drone> = listOf(),
     val foeDrones: List<Drone> = listOf(),
     val dronesScans: List<DroneScan> = listOf(),
-    val visibleCreatures: List<VisibleCreature> = listOf(),
+    val visibleCreatures: VisibleCreatures = VisibleCreatures(),
     val radarBlips: List<RadarBlip> = listOf(),
 )
 
@@ -294,3 +294,13 @@ data class DroneScan(
     val droneId: Int = 0,
     val creatureId: Int = 0
 )
+
+class VisibleCreatures {
+
+    private val visibleCreatures = mutableListOf<VisibleCreature>()
+
+    fun add(visibleCreature: VisibleCreature) {
+        visibleCreatures.add(visibleCreature)
+    }
+
+}
