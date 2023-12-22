@@ -174,18 +174,12 @@ data class Drone(
     val battery: Int = 30,
 ) {
 
-    var state: State = State.SEARCH
-
     fun turn(turnData: TurnData, creatures: Creatures): String {
-        return when (state) {
-            State.SEARCH -> search(turnData, creatures)
-            State.SURFACE -> surface()
-        }
+        return search(turnData, creatures)
     }
 
     private fun search(turnData: TurnData, creatures: Creatures): String {
         if (isAllCreaturesScanned(turnData)) {
-            state = State.SURFACE
             return "MOVE ${dronePosition.x} 500 0"
         }
 
@@ -204,16 +198,6 @@ data class Drone(
     private fun isHabitatZone(): Boolean {
         return dronePosition.y >= 2500
     }
-
-    private fun surface(): String {
-        if (isSurfaced()) {
-            state = State.SEARCH
-            return "WAIT 0"
-        }
-        return "MOVE ${dronePosition.x} 500 0"
-    }
-
-    private fun isSurfaced(): Boolean = dronePosition.y <= 500
 
     fun nearestCreatureToScan(visibleCreatures: List<VisibleCreature>, scannedCreatures: List<Int>): VisibleCreature {
         check(visibleCreatures.isNotEmpty()) { "No visible creatures for drone $droneId" }
@@ -256,8 +240,6 @@ data class Drone(
         val creaturesOnScreen = turnData.radarBlips.map { it.creatureId }.toSet()
         return scannedCreatures.size >= creaturesOnScreen.size
     }
-
-    enum class State { SEARCH, SURFACE }
 
 }
 
