@@ -138,7 +138,7 @@ data class Creatures(
     private val creatureCount: Int = 0,
     private val creatures: Map<Int, Creature> = mapOf()
 ) {
-    fun getCreature(creatureId: Int): Creature {
+    fun creature(creatureId: Int): Creature {
         return creatures[creatureId] ?: throw IllegalArgumentException("Can't find creature with id: $creatureId")
     }
 
@@ -301,6 +301,10 @@ class VisibleCreatures {
 
     fun add(visibleCreature: VisibleCreature) {
         visibleCreatures.add(visibleCreature)
+    }
+
+    fun monsters(creatures: Creatures): List<VisibleCreature> {
+        return visibleCreatures.filter { it.creatureId in creatures.monsterIds() }
     }
 
 }

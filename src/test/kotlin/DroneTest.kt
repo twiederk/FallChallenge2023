@@ -242,7 +242,7 @@ class DroneTest {
         val creature = drone.nextCreatureToScan(turnData, creatures)
 
         // assert
-        assertThat(creature).isEqualTo(creatures.getCreature(2))
+        assertThat(creature).isEqualTo(creatures.creature(2))
     }
 
     @Test
