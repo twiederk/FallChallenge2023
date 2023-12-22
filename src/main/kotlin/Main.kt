@@ -72,11 +72,11 @@ fun main() {
             )
         }
         val droneScanCount = input.nextInt()
-        val dronesScans = mutableListOf<Pair<Int, Int>>()
+        val dronesScans = mutableListOf<DroneScan>()
         for (i in 0 until droneScanCount) {
             val droneId = input.nextInt()
             val creatureId = input.nextInt()
-            dronesScans.add(Pair(droneId, creatureId))
+            dronesScans.add(DroneScan(droneId, creatureId))
         }
         val visibleCreatureCount = input.nextInt()
         val visibleCreatures = mutableListOf<VisibleCreature>()
@@ -154,19 +154,11 @@ data class TurnData(
     val foeScannedCreatures: List<Int> = listOf(),
     val myDrones: List<Drone> = listOf(),
     val foeDrones: List<Drone> = listOf(),
-    val dronesScans: List<Pair<Int, Int>> = listOf(),
+    val dronesScans: List<DroneScan> = listOf(),
     val visibleCreatures: List<VisibleCreature> = listOf(),
     val radarBlips: List<RadarBlip> = listOf(),
 )
 
-/*
-Drones move towards the given point, with a maximum distance per turn of 600u. If the motors are not activated in a turn, the drone will sink by 300u.
-
-At the end of the turn, fish within a radius of 800u will be automatically scanned.
-
-If you have increased the power of your light, this radius becomes 2000u, but the battery drains by 5 points.
-If the powerful light is not activated, the battery recharges by 1. The battery has a capacity of 30 and is fully charged at the beginning of the game.
-*/
 data class Drone(
     val droneId: Int = 0,
     val dronePosition: Point2D = Point2D(0, 0),
@@ -201,7 +193,7 @@ data class Drone(
         return dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D
     }
 
-    private fun hasScannedCreature(turnData: TurnData) = turnData.dronesScans.map { it.first }.contains(droneId)
+    private fun hasScannedCreature(turnData: TurnData) = turnData.dronesScans.map { it.droneId }.contains(droneId)
 
     private fun isHabitatZone(): Boolean {
         return dronePosition.y >= 2500
@@ -276,6 +268,11 @@ data class RadarBlip(
         )
     }
 }
+
+data class DroneScan(
+    val droneId: Int = 0,
+    val creatureId: Int = 0
+)
 
 @Suppress("unused")
 fun printErr(errorMsg: String) {

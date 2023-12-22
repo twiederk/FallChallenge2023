@@ -107,7 +107,7 @@ class DroneTest {
         // arrange
         val drone = Drone(dronePosition = Point2D(2_000, 3_000))
         val turnData = TurnData(
-            dronesScans = listOf(Pair(0, 10))
+            dronesScans = listOf(DroneScan(0, 10))
         )
 
         // act
