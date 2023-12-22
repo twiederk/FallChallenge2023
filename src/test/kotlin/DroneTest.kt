@@ -216,28 +216,35 @@ class DroneTest {
     @Test
     fun should_find_creature_with_lowest_type_of_not_scanned_creatures_on_screen() {
         // arrange
-        val drone = Drone(dronePosition = Point2D(2_000, 3_000))
+        val drone = Drone(droneId = 0, dronePosition = Point2D(2_000, 3_000))
         val creatures = mapOf(
             0 to Creature(creatureId = 0, color = 0, type = 2),
-            1 to Creature(creatureId = 1, color = 0, type = 1),
-            2 to Creature(creatureId = 2, color = 1, type = 1),
-            3 to Creature(creatureId = 3, color = 0, type = 0),
+            1 to Creature(creatureId = 1, color = 0, type = 1), // scanned by friendly drone
+            2 to Creature(creatureId = 2, color = 1, type = 1), // scanned by enemy drone
+            3 to Creature(creatureId = 3, color = 0, type = 0), // left screen
         )
         val turnData = TurnData(
+            myDrones = listOf(
+                drone,
+                Drone(droneId = 1, dronePosition = Point2D(2_000, 3_000))
+            ),
             myScannedCreatures = listOf(),
             radarBlips = listOf(
                 RadarBlip(0, 0, "TL"),
                 RadarBlip(0, 1, "TL"),
                 RadarBlip(0, 2, "TL"),
+            ),
+            dronesScans = listOf(
+                DroneScan(1, 1), // friendly drone
+                DroneScan(2, 2), // enemy drone
             )
-
         )
 
         // act
         val creature = drone.nextCreatureToScan(creatures, turnData)
 
         // assert
-        assertThat(creature).isEqualTo(creatures[1])
+        assertThat(creature).isEqualTo(creatures[2])
     }
 
     @Test
