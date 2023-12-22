@@ -15,7 +15,7 @@ fun main() {
         creatures[creatureId] = Creature(creatureId, color, type)
     }
 
-    val gameData = GameData(
+    val gameData = Creatures(
         creatureCount,
         creatures
     )
@@ -121,10 +121,10 @@ fun main() {
 }
 
 class GameLogic(
-    private val gameData: GameData
+    private val creatures: Creatures
 ) {
     fun turn(turnData: TurnData): List<String> {
-        return turnData.myDrones.map { it.turn(turnData, gameData.creatures) }
+        return turnData.myDrones.map { it.turn(turnData, creatures) }
     }
 }
 
@@ -134,10 +134,16 @@ data class VisibleCreature(
     val creatureVelocity: Point2D = Point2D(0, 0),
 )
 
-data class GameData(
-    val creatureCount: Int = 0,
-    val creatures: Map<Int, Creature> = mapOf()
-)
+data class Creatures(
+    private val creatureCount: Int = 0,
+    private val creatures: Map<Int, Creature> = mapOf()
+) {
+    fun getCreature(creatureId: Int): Creature {
+        return creatures[creatureId] ?: throw IllegalArgumentException("Can't find creature with id: $creatureId")
+    }
+
+    val values: Collection<Creature> = creatures.values
+}
 
 data class Creature(
     val creatureId: Int = 0,
@@ -166,14 +172,14 @@ data class Drone(
 
     var state: State = State.SEARCH
 
-    fun turn(turnData: TurnData, creatures: Map<Int, Creature>): String {
+    fun turn(turnData: TurnData, creatures: Creatures): String {
         return when (state) {
             State.SEARCH -> search(turnData, creatures)
             State.SURFACE -> surface()
         }
     }
 
-    private fun search(turnData: TurnData, creatures: Map<Int, Creature>): String {
+    private fun search(turnData: TurnData, creatures: Creatures): String {
         if (isAllCreaturesScanned(turnData)) {
             state = State.SURFACE
             return "MOVE ${dronePosition.x} 500 0"
@@ -184,8 +190,8 @@ data class Drone(
         return "MOVE ${direction.x} ${direction.y} $light"
     }
 
-    fun searchDirection(turnData: TurnData, creatures: Map<Int, Creature>): Point2D? {
-        val creature = nextCreatureToScan(creatures, turnData) ?: return null
+    fun searchDirection(turnData: TurnData, creatures: Creatures): Point2D? {
+        val creature = nextCreatureToScan(turnData, creatures) ?: return null
         val radarBlip = turnData.radarBlips.find { it.creatureId == creature.creatureId }
             ?: throw IllegalArgumentException("Can't find radar blip of creature [$creature]")
         return dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D
@@ -215,8 +221,8 @@ data class Drone(
     }
 
     fun nextCreatureToScan(
-        creatures: Map<Int, Creature>,
-        turnData: TurnData
+        turnData: TurnData,
+        creatures: Creatures
     ): Creature? {
         val creaturesOnRadar = turnData.radarBlips.map { it.creatureId }
         val myDroneIds = turnData.myDrones.map { it.droneId }

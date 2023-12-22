@@ -103,7 +103,7 @@ class DroneTest {
         )
 
         // act
-        val command = drone.turn(turnData, mapOf())
+        val command = drone.turn(turnData, Creatures())
 
         // assert
         assertThat(drone.state).isEqualTo(Drone.State.SURFACE)
@@ -117,7 +117,7 @@ class DroneTest {
         drone.state = Drone.State.SURFACE
 
         // act
-        val command = drone.turn(TurnData(), mapOf())
+        val command = drone.turn(TurnData(), Creatures())
 
         // assert
         assertThat(drone.state).isEqualTo(Drone.State.SURFACE)
@@ -132,7 +132,7 @@ class DroneTest {
         drone.state = Drone.State.SURFACE
 
         // act
-        val command = drone.turn(TurnData(), mapOf())
+        val command = drone.turn(TurnData(), Creatures())
 
         // assert
         assertThat(drone.state).isEqualTo(Drone.State.SEARCH)
@@ -172,8 +172,10 @@ class DroneTest {
                 RadarBlip(droneId = 0, creatureId = 0, radar = "TL")
             ),
         )
-        val creatures = mapOf(
-            0 to Creature(creatureId = 0, color = 0, type = 0)
+        val creatures = Creatures(
+            creatures = mapOf(
+                0 to Creature(creatureId = 0, color = 0, type = 0)
+            )
         )
 
         // act
@@ -192,9 +194,11 @@ class DroneTest {
                 RadarBlip(droneId = 0, creatureId = 1, radar = "TL")
             ),
         )
-        val creatures = mapOf(
-            0 to Creature(creatureId = 0, color = 0, type = 0),
-            1 to Creature(creatureId = 1, color = 0, type = 1)
+        val creatures = Creatures(
+            creatures = mapOf(
+                0 to Creature(creatureId = 0, color = 0, type = 0),
+                1 to Creature(creatureId = 1, color = 0, type = 1)
+            )
         )
 
         // act
@@ -209,11 +213,13 @@ class DroneTest {
     fun should_find_creature_with_lowest_type_of_not_scanned_creatures_on_screen() {
         // arrange
         val drone = Drone(droneId = 0, dronePosition = Point2D(2_000, 3_000))
-        val creatures = mapOf(
-            0 to Creature(creatureId = 0, color = 0, type = 2),
-            1 to Creature(creatureId = 1, color = 0, type = 1), // scanned by friendly drone
-            2 to Creature(creatureId = 2, color = 1, type = 1), // scanned by enemy drone
-            3 to Creature(creatureId = 3, color = 0, type = 0), // left screen
+        val creatures = Creatures(
+            creatures = mapOf(
+                0 to Creature(creatureId = 0, color = 0, type = 2),
+                1 to Creature(creatureId = 1, color = 0, type = 1), // scanned by friendly drone
+                2 to Creature(creatureId = 2, color = 1, type = 1), // scanned by enemy drone
+                3 to Creature(creatureId = 3, color = 0, type = 0), // left screen
+            )
         )
         val turnData = TurnData(
             myDrones = listOf(
@@ -233,10 +239,10 @@ class DroneTest {
         )
 
         // act
-        val creature = drone.nextCreatureToScan(creatures, turnData)
+        val creature = drone.nextCreatureToScan(turnData, creatures)
 
         // assert
-        assertThat(creature).isEqualTo(creatures[2])
+        assertThat(creature).isEqualTo(creatures.getCreature(2))
     }
 
     @Test

@@ -17,7 +17,7 @@ class GameLogicTest {
         )
 
         // act
-        val commands = GameLogic(GameData()).turn(turnData)
+        val commands = GameLogic(Creatures()).turn(turnData)
 
         // assert
         assertThat(commands).containsExactly("WAIT 0", "WAIT 0")
