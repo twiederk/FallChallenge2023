@@ -189,21 +189,20 @@ class DroneTest {
     }
 
     @Test
-    fun should_flee_from_monster_and_turn_light_off() {
+    fun should_avoid_monster_when_monster_crosses_the_way() {
         // arrange
         val drone = Drone(dronePosition = Point2D(1_000, 2_000))
-        val creatures = Creatures(
-            creatures = mapOf(0 to Creature(0, -1, -1))
+        val direction = Point2D(5_000, 2_000)
+        val monsters = listOf(
+            VisibleCreature(creaturePosition = Point2D(1200, 1800), creatureVelocity = Point2D(200, 0))
         )
-        val visibleCreatures = VisibleCreatures()
-        visibleCreatures.add(VisibleCreature(creaturePosition = Point2D(2_000, 3_000)))
-        val turnData = TurnData(visibleCreatures = visibleCreatures)
 
         // act
-        val command = drone.turn(turnData, creatures)
+        val command = drone.avoidMonster(direction, monsters)
 
         // assert
-        assertThat(command).isEqualTo("WAIT 0")
+        assertThat(command).isEqualTo("MOVE 1000 1400 0")
     }
+
 
 }
