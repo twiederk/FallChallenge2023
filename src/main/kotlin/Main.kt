@@ -1,4 +1,6 @@
 import java.util.*
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * Score points by scanning valuable fish faster than your opponent.
@@ -241,6 +243,18 @@ data class Point2D(
 
     operator fun plus(other: Point2D): Point2D =
         Point2D(x + other.x, y + other.y)
+
+    fun length(): Double {
+        return sqrt(x.toDouble().pow(2) + y.toDouble().pow(2))
+    }
+
+    fun scaledLength(desiredLength: Double): Point2D {
+        val scaleFactor = desiredLength / length()
+        val scaledX = x.toDouble() * scaleFactor
+        val scaledY = y.toDouble() * scaleFactor
+        return Point2D(scaledX.toInt(), scaledY.toInt())
+    }
+
 }
 
 data class RadarBlip(
