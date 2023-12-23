@@ -240,11 +240,12 @@ data class Drone(
         val creaturesOnRadar = turnData.radarBlips.map { it.creatureId }
         val myDroneIds = turnData.myDrones.map { it.droneId }
         val creaturesInMyDroneScan = turnData.dronesScans.filter { it.droneId in myDroneIds }.map { it.creatureId }
-        val sortedCreatures = creatures.values
-            .filterNot { it.creatureId in turnData.myScannedCreatures }
-            .filterNot { it.creatureId in creaturesInMyDroneScan }
-            .filter { it.creatureId in creaturesOnRadar }
-            .sortedBy { it.type }
+        val sortedCreatures = creatures.values.asSequence()
+            .filterNot { it.type == -1 } // no monsters
+            .filterNot { it.creatureId in turnData.myScannedCreatures } // no creatures from saved scans
+            .filterNot { it.creatureId in creaturesInMyDroneScan } // no creatures form scans in drone
+            .filter { it.creatureId in creaturesOnRadar } // only creatures on radar (screen)
+            .sortedBy { it.type }.toList()
         if (sortedCreatures.isEmpty()) return null
         return sortedCreatures.first()
     }

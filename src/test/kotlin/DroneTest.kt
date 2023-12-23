@@ -83,6 +83,7 @@ class DroneTest {
                 1 to Creature(creatureId = 1, color = 0, type = 1), // scanned by friendly drone
                 2 to Creature(creatureId = 2, color = 1, type = 1), // scanned by enemy drone
                 3 to Creature(creatureId = 3, color = 0, type = 0), // left screen
+                4 to Creature(creatureId = 4, color = -1, type = -1), // monster
             )
         )
         val turnData = TurnData(
@@ -95,6 +96,7 @@ class DroneTest {
                 RadarBlip(0, 0, "TL"),
                 RadarBlip(0, 1, "TL"),
                 RadarBlip(0, 2, "TL"),
+                RadarBlip(0, 4, "TL"),
             ),
             dronesScans = listOf(
                 DroneScan(1, 1), // friendly drone
