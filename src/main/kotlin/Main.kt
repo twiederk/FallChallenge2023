@@ -175,72 +175,33 @@ data class Drone(
     val battery: Int = 30,
 ) {
 
-    var creatureToScan: Creature? = null
+    companion object {
+        const val DRONE_SPEED = 600
+        const val DRONE_SECURITY_DISTANCE = 750
+        const val SURFACE = 500
+    }
+
+    private var droneTarget: DroneTarget? = null
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
-        val direction = searchDirection(turnData, creatures) ?: Point2D(dronePosition.x, 500)
-        val monsters = turnData.visibleCreatures.monsters(creatures)
-        if (monsters.isNotEmpty()) {
-            return avoidMonster(direction, monsters)
-        }
-        if (isAllCreaturesScanned(turnData)) {
-            return "MOVE ${dronePosition.x} 500 0 $creatureToScan"
-        }
+        val creatureToScan = creatureToScan(turnData, creatures)
+        var droneTarget = droneTargetPosition(creatureToScan, turnData)
 
+        if (!isTargetPositionSafe(turnData, creatures, droneTarget.targetPosition)) {
+            droneTarget = avoidMonster(turnData, creatures, droneTarget)
+        }
+        this.droneTarget = droneTarget
         val light = light()
-        return "MOVE ${direction.x} ${direction.y} $light $creatureToScan"
-    }
-
-    fun avoidMonster(direction: Point2D, monsters: List<VisibleCreature>): String {
-        System.err.println("dronePosition = $dronePosition")
-        System.err.println("direction = $direction")
-        val droneVelocity = (direction - dronePosition).scaledLength(600.0)
-        System.err.println("droneVelocity = $droneVelocity")
-        var droneTargetPosition = dronePosition + droneVelocity
-        System.err.println("droneTargetPosition = ${droneTargetPosition}")
+        return "MOVE ${droneTarget.targetPosition.x} ${droneTarget.targetPosition.y} $light ${droneTarget.creatureToScan} ${droneTarget.comment}"
 
 
-        for (monster in monsters) {
-            System.err.println("monster.creaturePosition = ${monster.creaturePosition}")
-            System.err.println("monster.creatureVelocity = ${monster.creatureVelocity}")
-            val monsterTargetPosition = monster.creaturePosition + monster.creatureVelocity
-            System.err.println("monsterTargetPosition = $monsterTargetPosition")
-
-            val distance = droneTargetPosition.distance(monsterTargetPosition)
-            System.err.println("distance = ${distance}")
-
-            val offset = monsterTargetPosition - droneTargetPosition
-            System.err.println("offset = ${offset}")
-
-            if (droneTargetPosition.distance(monsterTargetPosition) > 500) {
-                // the monster is not after me
-                continue
-            }
-
-            while (droneTargetPosition.distance(monsterTargetPosition) <= 500) {
-                droneTargetPosition += offset
-                System.err.println("NEW droneTargetPosition = ${droneTargetPosition}")
-            }
-            return "MOVE ${droneTargetPosition.x} ${droneTargetPosition.y} 0 HUNTED $creatureToScan"
-        }
-        return "MOVE ${direction.x} ${direction.y} 0 NOT HUNTED $creatureToScan"
-
+//        if (isAllCreaturesScanned(turnData)) {
+//            return "MOVE ${dronePosition.x} 500 0 $creatureToScan"
+//        }
 
     }
 
-    fun searchDirection(turnData: TurnData, creatures: Creatures): Point2D? {
-        val creature = nextCreatureToScan(turnData, creatures) ?: return null
-        creatureToScan = creature
-        val radarBlip = turnData.radarBlips.find { it.creatureId == creature.creatureId && it.droneId == droneId }
-            ?: throw IllegalArgumentException("Can't find radar blip of creature [$creature]")
-        return dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D
-    }
-
-    private fun isHabitatZone(): Boolean {
-        return dronePosition.y >= 2500
-    }
-
-    fun nextCreatureToScan(
+    fun creatureToScan(
         turnData: TurnData,
         creatures: Creatures
     ): Creature? {
@@ -255,6 +216,78 @@ data class Drone(
             .sortedBy { it.type }.toList()
         if (sortedCreatures.isEmpty()) return null
         return sortedCreatures.first()
+    }
+
+    private fun droneTargetPosition(creatureToScan: Creature?, turnData: TurnData): DroneTarget {
+        return if (creatureToScan == null) {
+            DroneTarget(
+                targetPosition = Point2D(dronePosition.x, SURFACE),
+                comment = "SURFACE"
+            )
+        } else {
+            val radarBlip =
+                turnData.radarBlips.find { it.creatureId == creatureToScan.creatureId && it.droneId == droneId }
+                    ?: throw IllegalArgumentException("Can't find radar blip of creature [$creatureToScan]")
+            DroneTarget(
+                targetPosition = dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D,
+                comment = radarBlip.radar
+            )
+        }
+    }
+
+    private fun isTargetPositionSafe(turnData: TurnData, creatures: Creatures, targetPosition: Point2D): Boolean {
+        val monsters = turnData.visibleCreatures.monsters(creatures)
+        if (monsters.isNotEmpty()) {
+            val droneVelocity = (targetPosition - dronePosition).scaledLength(DRONE_SPEED)
+            val droneTargetPosition = dronePosition + droneVelocity
+            for (monster in monsters) {
+                val monsterTargetPosition = monster.creaturePosition + monster.creatureVelocity
+                val distance = droneTargetPosition.distance(monsterTargetPosition)
+                if (distance < DRONE_SECURITY_DISTANCE) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    fun avoidMonster(turnData: TurnData, creatures: Creatures, droneTarget: DroneTarget): DroneTarget {
+        val droneVelocity = (droneTarget.targetPosition - dronePosition).scaledLength(DRONE_SPEED)
+        var droneTargetPosition = dronePosition + droneVelocity
+        System.err.println("droneTargetPosition = $droneTargetPosition")
+
+        val monsters = turnData.visibleCreatures.monsters(creatures)
+        for (monster in monsters) {
+            System.err.println("monster.creaturePosition = ${monster.creaturePosition}")
+            System.err.println("monster.creatureVelocity = ${monster.creatureVelocity}")
+            val monsterTargetPosition = monster.creaturePosition + monster.creatureVelocity
+            System.err.println("monsterTargetPosition = $monsterTargetPosition")
+
+            val distance = droneTargetPosition.distance(monsterTargetPosition)
+            System.err.println("distance = $distance")
+
+            val offset = monsterTargetPosition - droneTargetPosition
+            System.err.println("offset = $offset")
+
+            if (droneTargetPosition.distance(monsterTargetPosition) > DRONE_SECURITY_DISTANCE) {
+                // the monster is not after me
+                continue
+            }
+
+            while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE) {
+                droneTargetPosition += offset
+                System.err.println("NEW droneTargetPosition = $droneTargetPosition")
+            }
+            return droneTarget.copy(
+                targetPosition = Point2D(droneTargetPosition.x, droneTargetPosition.y),
+                comment = "HUNTED"
+            )
+        }
+        return droneTarget.copy(comment = "${droneTarget.comment} NOT HUNTED")
+    }
+
+    private fun isHabitatZone(): Boolean {
+        return dronePosition.y >= 2500
     }
 
     fun light(): Int {
@@ -276,6 +309,12 @@ data class Drone(
 
 }
 
+data class DroneTarget(
+    val creatureToScan: Creature? = null,
+    val targetPosition: Point2D,
+    val comment: String = ""
+)
+
 data class Point2D(
     val x: Int,
     val y: Int
@@ -294,8 +333,8 @@ data class Point2D(
         return sqrt(x.toDouble().pow(2) + y.toDouble().pow(2))
     }
 
-    fun scaledLength(desiredLength: Double): Point2D {
-        val scaleFactor = desiredLength / length()
+    fun scaledLength(desiredLength: Int): Point2D {
+        val scaleFactor = desiredLength.toDouble() / length()
         val scaledX = x.toDouble() * scaleFactor
         val scaledY = y.toDouble() * scaleFactor
         return Point2D(scaledX.toInt(), scaledY.toInt())

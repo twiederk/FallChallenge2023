@@ -74,7 +74,7 @@ class DroneTest {
     }
 
     @Test
-    fun should_find_creature_with_lowest_type_of_not_scanned_creatures_on_screen() {
+    fun should_find_next_creature_to_scan() {
         // arrange
         val drone = Drone(droneId = 0, dronePosition = Point2D(2_000, 3_000))
         val creatures = Creatures(
@@ -105,7 +105,7 @@ class DroneTest {
         )
 
         // act
-        val creature = drone.nextCreatureToScan(turnData, creatures)
+        val creature = drone.creatureToScan(turnData, creatures)
 
         // assert
         assertThat(creature).isEqualTo(creatures.creature(2))
