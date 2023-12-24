@@ -118,9 +118,8 @@ class DroneTest {
     }
 
     @Test
-    fun should_find_next_creature_to_scan() {
+    fun should_find_creature_to_scan() {
         // arrange
-        val drone = Drone(droneId = 0, dronePosition = Point2D(2_000, 3_000))
         val creatures = Creatures(
             creatures = mapOf(
                 0 to Creature(creatureId = 0, color = 0, type = 2),
@@ -128,12 +127,20 @@ class DroneTest {
                 2 to Creature(creatureId = 2, color = 1, type = 1), // scanned by enemy drone
                 3 to Creature(creatureId = 3, color = 0, type = 0), // left screen
                 4 to Creature(creatureId = 4, color = -1, type = -1), // monster
+                5 to Creature(creatureId = 5, color = 0, type = 0) // scan target of drone1
             )
         )
+        val drone0 = Drone(droneId = 0, dronePosition = Point2D(2_000, 3_000))
+        val drone1 = Drone(droneId = 1, dronePosition = Point2D(4_000, 6_000)).apply {
+            droneTarget = DroneTarget(
+                creatureToScan = creatures.creature(5),
+                targetPosition = Point2D(0, 0)
+            )
+        }
         val turnData = TurnData(
             myDrones = listOf(
-                drone,
-                Drone(droneId = 1, dronePosition = Point2D(2_000, 3_000))
+                drone0,
+                drone1,
             ),
             myScannedCreatures = listOf(),
             radarBlips = listOf(
@@ -141,6 +148,7 @@ class DroneTest {
                 RadarBlip(0, 1, "TL"),
                 RadarBlip(0, 2, "TL"),
                 RadarBlip(0, 4, "TL"),
+                RadarBlip(0, 5, "TL"),
             ),
             dronesScans = listOf(
                 DroneScan(1, 1), // friendly drone
@@ -149,7 +157,7 @@ class DroneTest {
         )
 
         // act
-        val creature = drone.creatureToScan(turnData, creatures)
+        val creature = drone0.creatureToScan(turnData, creatures)
 
         // assert
         assertThat(creature).isEqualTo(creatures.creature(2))

@@ -182,7 +182,7 @@ data class Drone(
         const val SURFACE = 500
     }
 
-    private var droneTarget: DroneTarget? = null
+    var droneTarget: DroneTarget? = null
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
         val creatureToScan = creatureToScan(turnData, creatures)
@@ -209,15 +209,17 @@ data class Drone(
     ): Creature? {
         val creaturesOnRadar = turnData.radarBlips.map { it.creatureId }.toSet()
         val myDroneIds = turnData.myDrones.map { it.droneId }
+        val creaturesToScanByOtherDrones =
+            turnData.myDrones.filter { it.droneId != droneId }.mapNotNull { it.droneTarget?.creatureToScan?.creatureId }
         val creaturesInMyDroneScan = turnData.dronesScans.filter { it.droneId in myDroneIds }.map { it.creatureId }
         val sortedCreatures = creatures.values.asSequence()
             .filterNot { it.type == -1 } // no monsters
             .filterNot { it.creatureId in turnData.myScannedCreatures } // no creatures from saved scans
             .filterNot { it.creatureId in creaturesInMyDroneScan } // no creatures form scans in drone
+            .filterNot { it.creatureId in creaturesToScanByOtherDrones } // no creatures to scan from my other drones
             .filter { it.creatureId in creaturesOnRadar } // only creatures on radar (screen)
             .sortedBy { it.type }.toList()
-        if (sortedCreatures.isEmpty()) return null
-        return sortedCreatures.first()
+        return sortedCreatures.firstOrNull()
     }
 
     fun droneTargetPosition(turnData: TurnData, creatureToScan: Creature?): DroneTarget {
