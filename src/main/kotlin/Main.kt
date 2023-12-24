@@ -206,7 +206,7 @@ data class Drone(
         turnData: TurnData,
         creatures: Creatures
     ): Creature? {
-        val creaturesOnRadar = turnData.radarBlips.map { it.creatureId }
+        val creaturesOnRadar = turnData.radarBlips.map { it.creatureId }.toSet()
         val myDroneIds = turnData.myDrones.map { it.droneId }
         val creaturesInMyDroneScan = turnData.dronesScans.filter { it.droneId in myDroneIds }.map { it.creatureId }
         val sortedCreatures = creatures.values.asSequence()
@@ -230,6 +230,7 @@ data class Drone(
                 turnData.radarBlips.find { it.creatureId == creatureToScan.creatureId && it.droneId == droneId }
                     ?: throw IllegalArgumentException("Can't find radar blip of creature [$creatureToScan]")
             DroneTarget(
+                creatureToScan = creatureToScan,
                 targetPosition = dronePosition + RadarBlip.RADAR_BLIP_TO_DIRECTION[radarBlip.radar] as Point2D,
                 comment = radarBlip.radar
             )
