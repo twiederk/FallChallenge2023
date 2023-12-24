@@ -188,7 +188,8 @@ data class Drone(
         var droneTarget = droneTargetPosition(creatureToScan, turnData)
 
         if (!isTargetPositionSafe(turnData, creatures, droneTarget.targetPosition)) {
-            droneTarget = avoidMonster(turnData, creatures, droneTarget)
+            val monsters = turnData.visibleCreatures.monsters(creatures)
+            droneTarget = avoidMonster(droneTarget, monsters)
         }
         this.droneTarget = droneTarget
         val light = light()
@@ -251,29 +252,17 @@ data class Drone(
         return true
     }
 
-    fun avoidMonster(turnData: TurnData, creatures: Creatures, droneTarget: DroneTarget): DroneTarget {
+    fun avoidMonster(droneTarget: DroneTarget, monsters: List<VisibleCreature>): DroneTarget {
         val droneVelocity = (droneTarget.targetPosition - dronePosition).scaledLength(DRONE_SPEED)
         var droneTargetPosition = dronePosition + droneVelocity
         System.err.println("droneTargetPosition = $droneTargetPosition")
 
-        val monsters = turnData.visibleCreatures.monsters(creatures)
         for (monster in monsters) {
-            System.err.println("monster.creaturePosition = ${monster.creaturePosition}")
-            System.err.println("monster.creatureVelocity = ${monster.creatureVelocity}")
             val monsterTargetPosition = monster.creaturePosition + monster.creatureVelocity
-            System.err.println("monsterTargetPosition = $monsterTargetPosition")
-
-            val distance = droneTargetPosition.distance(monsterTargetPosition)
-            System.err.println("distance = $distance")
-
-            val offset = monsterTargetPosition - droneTargetPosition
-            System.err.println("offset = $offset")
-
             if (droneTargetPosition.distance(monsterTargetPosition) > DRONE_SECURITY_DISTANCE) {
-                // the monster is not after me
-                continue
+                continue // the monster is not after me
             }
-
+            val offset = monsterTargetPosition - droneTargetPosition
             while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE) {
                 droneTargetPosition += offset
                 System.err.println("NEW droneTargetPosition = $droneTargetPosition")
