@@ -1,4 +1,5 @@
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -277,11 +278,22 @@ data class Drone(
             System.err.println("offset = $offset")
 
             while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE) {
-                droneTargetPosition += offset
+                val newX = if (dronePosition.x < monster.creaturePosition.x) {
+                    droneTargetPosition.x - abs(offset.x)
+                } else {
+                    droneTargetPosition.x + abs(offset.x)
+                }
+                val newY = if (dronePosition.y < monster.creaturePosition.y) {
+                    droneTargetPosition.y - abs(offset.y)
+                } else {
+                    droneTargetPosition.y + abs(offset.y)
+                }
+
+                droneTargetPosition = Point2D(newX, newY)
                 System.err.println("NEW droneTargetPosition = $droneTargetPosition")
             }
             return droneTarget.copy(
-                targetPosition = Point2D(droneTargetPosition.x, droneTargetPosition.y),
+                targetPosition = droneTargetPosition,
                 comment = "HUNTED"
             )
         }
@@ -314,7 +326,7 @@ data class Drone(
 data class DroneTarget(
     val creatureToScan: Creature? = null,
     val targetPosition: Point2D,
-    val comment: String = ""
+    val comment: String = "",
 )
 
 data class Point2D(

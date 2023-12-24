@@ -87,6 +87,7 @@ class DroneTest {
         // assert
         assertThat(droneTargetPosition).isEqualTo(
             DroneTarget(
+                creatureToScan = creature,
                 targetPosition = Point2D(2_500, 1_500),
                 comment = "TL"
             )
@@ -237,7 +238,7 @@ class DroneTest {
     }
 
     @Test
-    fun should_avoid_monster_when_monster_crosses_the_way() {
+    fun should_avoid_monster_when_monster_crosses_the_way_1() {
         // arrange
         val drone = Drone(dronePosition = Point2D(1_000, 2_000))
         val droneTarget = DroneTarget(targetPosition = Point2D(5_000, 2_000))
@@ -251,7 +252,31 @@ class DroneTest {
         // assert
         assertThat(command).isEqualTo(
             DroneTarget(
-                targetPosition = Point2D(800, 1200),
+                targetPosition = Point2D(1_000, 2_600),
+                comment = "HUNTED"
+            )
+        )
+    }
+
+    @Test
+    fun should_avoid_monster_when_monster_crosses_the_way_2() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(7_088, 7_284))
+        val droneTarget = DroneTarget(targetPosition = Point2D(7_588, 6_784))
+        val monsters = listOf(
+            VisibleCreature(
+                creaturePosition = Point2D(7_840, 6_570),
+                creatureVelocity = Point2D(-19, -269)
+            )
+        )
+
+        // act
+        val command = drone.avoidMonster(droneTarget, monsters)
+
+        // assert
+        assertThat(command).isEqualTo(
+            DroneTarget(
+                targetPosition = Point2D(7203, 7419),
                 comment = "HUNTED"
             )
         )
