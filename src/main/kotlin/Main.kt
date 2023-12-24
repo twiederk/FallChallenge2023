@@ -254,16 +254,28 @@ data class Drone(
     }
 
     fun avoidMonster(droneTarget: DroneTarget, monsters: List<VisibleCreature>): DroneTarget {
+        System.err.println("************** $droneId **************")
+        System.err.println("dronePosition = $dronePosition")
+        System.err.println("droneTarget.targetPosition = ${droneTarget.targetPosition}")
         val droneVelocity = (droneTarget.targetPosition - dronePosition).scaledLength(DRONE_SPEED)
+        System.err.println("droneVelocity = $droneVelocity")
         var droneTargetPosition = dronePosition + droneVelocity
         System.err.println("droneTargetPosition = $droneTargetPosition")
 
         for (monster in monsters) {
+            System.err.println("monster.creaturePosition = ${monster.creaturePosition}")
+            System.err.println("monster.creatureVelocity = ${monster.creatureVelocity}")
             val monsterTargetPosition = monster.creaturePosition + monster.creatureVelocity
+            System.err.println("monsterTargetPosition = $monsterTargetPosition")
+
+            System.err.println("distance = ${droneTargetPosition.distance(monsterTargetPosition)}")
+
             if (droneTargetPosition.distance(monsterTargetPosition) > DRONE_SECURITY_DISTANCE) {
                 continue // the monster is not after me
             }
             val offset = monsterTargetPosition - droneTargetPosition
+            System.err.println("offset = $offset")
+
             while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE) {
                 droneTargetPosition += offset
                 System.err.println("NEW droneTargetPosition = $droneTargetPosition")
