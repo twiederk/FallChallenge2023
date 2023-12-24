@@ -42,7 +42,12 @@ class DroneTest {
         val droneTargetPosition = drone.droneTargetPosition(turnData, creature)
 
         // assert
-        assertThat(droneTargetPosition).isEqualTo(Point2D(2_500, 1_500))
+        assertThat(droneTargetPosition).isEqualTo(
+            DroneTarget(
+                targetPosition = Point2D(2_500, 1_500),
+                comment = "TL"
+            )
+        )
     }
 
     @Test
@@ -64,7 +69,7 @@ class DroneTest {
         val creature = Drone().creatureToScan(turnData, creatures)
 
         // assert
-        assertThat(creature).isEqualTo(creatures.creature(0))
+        assertThat(creature).isEqualTo(creatures.creature(1))
 
     }
 
@@ -198,7 +203,12 @@ class DroneTest {
         val command = drone.avoidMonster(droneTarget, monsters)
 
         // assert
-        assertThat(command).isEqualTo("MOVE 1000 1400 0 The monster is hunting me")
+        assertThat(command).isEqualTo(
+            DroneTarget(
+                targetPosition = Point2D(800, 1200),
+                comment = "HUNTED"
+            )
+        )
     }
 
 

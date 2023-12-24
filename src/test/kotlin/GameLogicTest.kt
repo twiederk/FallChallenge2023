@@ -21,8 +21,8 @@ class GameLogicTest {
 
         // assert
         assertThat(commands).containsExactly(
-            "MOVE 2000 500 1 Moving to 2000 500",
-            "MOVE 4000 500 1 Moving to 4000 500"
+            "MOVE 2000 500 1 null SURFACE",
+            "MOVE 4000 500 1 null SURFACE"
         )
 
     }
