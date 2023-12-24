@@ -203,7 +203,7 @@ class DroneTest {
         val command = drone.avoidMonster(direction, monsters)
 
         // assert
-        assertThat(command).isEqualTo("MOVE 1000 1400 0")
+        assertThat(command).isEqualTo("MOVE 1000 1400 0 The monster is hunting me")
     }
 
 

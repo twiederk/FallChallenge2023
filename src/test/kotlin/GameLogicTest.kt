@@ -20,7 +20,11 @@ class GameLogicTest {
         val commands = GameLogic(Creatures()).turn(turnData)
 
         // assert
-        assertThat(commands).containsExactly("WAIT 0", "WAIT 0")
+        assertThat(commands).containsExactly(
+            "MOVE 2000 500 1 Moving to 2000 500",
+            "MOVE 4000 500 1 Moving to 4000 500"
+        )
+
     }
 
 }
