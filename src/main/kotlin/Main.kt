@@ -185,7 +185,7 @@ data class Drone(
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
         val creatureToScan = creatureToScan(turnData, creatures)
-        var droneTarget = droneTargetPosition(creatureToScan, turnData)
+        var droneTarget = droneTargetPosition(turnData, creatureToScan)
 
         if (!isTargetPositionSafe(turnData, creatures, droneTarget.targetPosition)) {
             val monsters = turnData.visibleCreatures.monsters(creatures)
@@ -219,7 +219,7 @@ data class Drone(
         return sortedCreatures.first()
     }
 
-    private fun droneTargetPosition(creatureToScan: Creature?, turnData: TurnData): DroneTarget {
+    fun droneTargetPosition(turnData: TurnData, creatureToScan: Creature?): DroneTarget {
         return if (creatureToScan == null) {
             DroneTarget(
                 targetPosition = Point2D(dronePosition.x, SURFACE),

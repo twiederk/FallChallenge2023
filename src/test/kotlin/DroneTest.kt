@@ -28,7 +28,7 @@ class DroneTest {
     }
 
     @Test
-    fun should_search_first_type_0_when_not_all_type_0_scanned() {
+    fun should_set_target_position_based_on_radar_blink() {
         // arrange
         val drone = Drone(dronePosition = Point2D(3_000, 2_000))
         val turnData = TurnData(
@@ -36,23 +36,18 @@ class DroneTest {
                 RadarBlip(droneId = 0, creatureId = 0, radar = "TL")
             ),
         )
-        val creatures = Creatures(
-            creatures = mapOf(
-                0 to Creature(creatureId = 0, color = 0, type = 0)
-            )
-        )
+        val creature = Creature(creatureId = 0, color = 0, type = 0)
 
         // act
-        val direction = drone.searchDirection(turnData, creatures)
+        val droneTargetPosition = drone.droneTargetPosition(turnData, creature)
 
         // assert
-        assertThat(direction).isEqualTo(Point2D(2_500, 1_500))
+        assertThat(droneTargetPosition).isEqualTo(Point2D(2_500, 1_500))
     }
 
     @Test
-    fun should_search_only_creatures_one_screen() {
+    fun should_scan_creature_only_when_the_creature_is_on_screen() {
         // arrange
-        val drone = Drone(dronePosition = Point2D(3_000, 2_000))
         val turnData = TurnData(
             radarBlips = listOf(
                 RadarBlip(droneId = 0, creatureId = 1, radar = "TL")
@@ -66,10 +61,10 @@ class DroneTest {
         )
 
         // act
-        val direction = drone.searchDirection(turnData, creatures)
+        val creature = Drone().creatureToScan(turnData, creatures)
 
         // assert
-        assertThat(direction).isEqualTo(Point2D(2_500, 1_500))
+        assertThat(creature).isEqualTo(creatures.creature(0))
 
     }
 
@@ -194,13 +189,13 @@ class DroneTest {
     fun should_avoid_monster_when_monster_crosses_the_way() {
         // arrange
         val drone = Drone(dronePosition = Point2D(1_000, 2_000))
-        val direction = Point2D(5_000, 2_000)
+        val droneTarget = DroneTarget(targetPosition = Point2D(5_000, 2_000))
         val monsters = listOf(
             VisibleCreature(creaturePosition = Point2D(1200, 1800), creatureVelocity = Point2D(200, 0))
         )
 
         // act
-        val command = drone.avoidMonster(direction, monsters)
+        val command = drone.avoidMonster(droneTarget, monsters)
 
         // assert
         assertThat(command).isEqualTo("MOVE 1000 1400 0 The monster is hunting me")
