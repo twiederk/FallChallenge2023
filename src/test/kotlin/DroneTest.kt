@@ -311,7 +311,7 @@ class DroneTest {
         // assert
         assertThat(command).isEqualTo(
             DroneTarget(
-                targetPosition = Point2D(1138, 3842),
+                targetPosition = Point2D(3062, 1958),
                 comment = "HUNTED"
             )
         )
@@ -335,7 +335,7 @@ class DroneTest {
         // assert
         assertThat(command).isEqualTo(
             DroneTarget(
-                targetPosition = Point2D(1148, 2148),
+                targetPosition = Point2D(3052, 4052),
                 comment = "HUNTED"
             )
         )
