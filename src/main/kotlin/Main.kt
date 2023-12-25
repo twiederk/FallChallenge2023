@@ -194,12 +194,6 @@ data class Drone(
         this.droneTarget = droneTarget
         val light = light()
         return "MOVE ${droneTarget.targetPosition.x} ${droneTarget.targetPosition.y} $light ${droneTarget.creatureToScan} ${droneTarget.comment}"
-
-
-//        if (isAllCreaturesScanned(turnData)) {
-//            return "MOVE ${dronePosition.x} 500 0 $creatureToScan"
-//        }
-
     }
 
     fun creatureToScan(
@@ -297,18 +291,6 @@ data class Drone(
     fun light(): Int {
         if (isHabitatZone()) return 1
         return 0
-    }
-
-    fun isAllCreaturesScanned(turnData: TurnData): Boolean {
-//        creature must be on screen (in radarBlips)
-//        must be (in saved scans or in droneScans)
-        val scannedCreatures = mutableSetOf<Int>()
-        scannedCreatures.addAll(turnData.myScannedCreatures)
-        val myDroneIds = turnData.myDrones.map { it.droneId }
-        val scansInMyDrones = turnData.dronesScans.filter { it.droneId in myDroneIds }.map { it.creatureId }
-        scannedCreatures.addAll(scansInMyDrones)
-        val creaturesOnScreen = turnData.radarBlips.map { it.creatureId }.toSet()
-        return scannedCreatures.size >= creaturesOnScreen.size
     }
 
     fun escapeVector(droneTargetPosition: Point2D, monsterTargetPosition: Point2D): Point2D {
