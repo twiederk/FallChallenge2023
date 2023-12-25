@@ -301,9 +301,9 @@ data class Drone(
         val type = droneTarget?.creatureToScan?.type
         type?.let {
             when (type) {
-                0 -> if (dronePosition.y in 2500..5000) return 1 else 0
-                1 -> if (dronePosition.y in 5000..7500) return 1 else 0
-                2 -> if (dronePosition.y in 7500..10000) return 1 else 0
+                0 -> if (dronePosition.y in 500..7000) return 1 else 0
+                1 -> if (dronePosition.y in 3000..10000) return 1 else 0
+                2 -> if (dronePosition.y in 5500..10000) return 1 else 0
                 else -> return 0
 
             }
