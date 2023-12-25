@@ -392,6 +392,39 @@ class DroneTest {
     }
 
     @Test
+    fun should_return_true_when_one_type_is_scanned_and_one_scan_is_already_saved() {
+        // arrange
+        val drone0 = Drone(0, Point2D(3000, 2000))
+        val drone2 = Drone(2, Point2D(7000, 5000))
+
+        val creatures = Creatures(creatures = allCreatures)
+        val turnData = TurnData(
+            myDrones = listOf(drone0, drone2),
+            myScannedCreatures = listOf(3),
+            dronesScans = DroneScans(
+                listOf
+                    (
+                    DroneScan(0, 0),
+                    DroneScan(0, 1),
+                    DroneScan(2, 2),
+                )
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 0),
+                RadarBlip(0, 1),
+                RadarBlip(0, 2),
+                RadarBlip(0, 3),
+            )
+        )
+
+        // act
+        val result = drone0.isAllCreaturesOfTypeInDrohneScan(turnData, creatures)
+
+        // assert
+        assertThat(result).isTrue()
+    }
+
+    @Test
     fun should_not_surface_when_own_drone_scans_are_empty() {
         // arrange
         val drone0 = Drone(0, Point2D(3000, 2000))
