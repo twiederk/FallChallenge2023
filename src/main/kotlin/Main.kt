@@ -73,12 +73,13 @@ fun main() {
             )
         }
         val droneScanCount = input.nextInt()
-        val dronesScans = mutableListOf<DroneScan>()
+        val dronesScansList = mutableListOf<DroneScan>()
         for (i in 0 until droneScanCount) {
             val droneId = input.nextInt()
             val creatureId = input.nextInt()
-            dronesScans.add(DroneScan(droneId, creatureId))
+            dronesScansList.add(DroneScan(droneId, creatureId))
         }
+        val dronesScans = DroneScans(dronesScansList)
         val visibleCreatureCount = input.nextInt()
         val visibleCreatures = VisibleCreatures()
         for (i in 0 until visibleCreatureCount) {
@@ -163,7 +164,7 @@ data class TurnData(
     val foeScannedCreatures: List<Int> = listOf(),
     val myDrones: List<Drone> = listOf(),
     val foeDrones: List<Drone> = listOf(),
-    val dronesScans: List<DroneScan> = listOf(),
+    val dronesScans: DroneScans = DroneScans(),
     val visibleCreatures: VisibleCreatures = VisibleCreatures(),
     val radarBlips: List<RadarBlip> = listOf(),
 )
@@ -204,7 +205,7 @@ data class Drone(
         val myDroneIds = turnData.myDrones.map { it.droneId }
         val creaturesToScanByOtherDrones =
             turnData.myDrones.filter { it.droneId != droneId }.mapNotNull { it.droneTarget?.creatureToScan?.creatureId }
-        val creaturesInMyDroneScan = turnData.dronesScans.filter { it.droneId in myDroneIds }.map { it.creatureId }
+        val creaturesInMyDroneScan = turnData.dronesScans.creaturesInDroneScans(myDroneIds)
         val sortedCreatures = creatures.values.asSequence()
             .filterNot { it.type == -1 } // no monsters
             .filterNot { it.creatureId in turnData.myScannedCreatures } // no creatures from saved scans
@@ -297,6 +298,10 @@ data class Drone(
         return dronePosition - monsterTargetPosition
     }
 
+    fun isCreaturesOfKindInDrohneScan(turnData: TurnData, creatures: Creatures): Boolean {
+        return false
+    }
+
 }
 
 data class DroneTarget(
@@ -365,4 +370,12 @@ class VisibleCreatures {
         return visibleCreatures.filter { it.creatureId in creatures.monsterIds() }
     }
 
+}
+
+class DroneScans(
+    val dronesScans: List<DroneScan> = listOf()
+) {
+    fun creaturesInDroneScans(droneIds: List<Int>): List<Int> {
+        return dronesScans.filter { it.droneId in droneIds }.map { it.creatureId }
+    }
 }

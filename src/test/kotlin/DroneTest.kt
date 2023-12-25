@@ -3,6 +3,21 @@ import org.junit.jupiter.api.Test
 
 class DroneTest {
 
+    private val allCreatures = mapOf(
+        0 to Creature(0, 0, 0),
+        1 to Creature(1, 1, 0),
+        2 to Creature(2, 2, 0),
+        3 to Creature(3, 3, 0),
+        4 to Creature(4, 0, 1),
+        5 to Creature(5, 1, 1),
+        6 to Creature(6, 2, 1),
+        7 to Creature(7, 3, 1),
+        8 to Creature(8, 0, 2),
+        9 to Creature(9, 1, 2),
+        10 to Creature(10, 2, 2),
+        11 to Creature(11, 3, 2),
+    )
+
     @Test
     fun should_scan_next_creature() {
         // arrange
@@ -149,9 +164,11 @@ class DroneTest {
                 RadarBlip(0, 4, "TL"),
                 RadarBlip(0, 5, "TL"),
             ),
-            dronesScans = listOf(
-                DroneScan(1, 1), // friendly drone
-                DroneScan(2, 2), // enemy drone
+            dronesScans = DroneScans(
+                listOf(
+                    DroneScan(1, 1), // friendly drone
+                    DroneScan(2, 2), // enemy drone
+                )
             )
         )
 
@@ -308,6 +325,33 @@ class DroneTest {
 
         // assert
         assertThat(escapeVector).isEqualTo(Point2D(-476, 476))
+    }
+
+    @Test
+    fun should_surface_when_all_creatures_of_one_type_are_in_drohne_scan() {
+        // arrange
+        val drone0 = Drone(0, Point2D(3000, 2000))
+        val drone2 = Drone(2, Point2D(7000, 5000))
+
+        val creatures = Creatures(creatures = allCreatures)
+        val turnData = TurnData(
+            myDrones = listOf(drone0, drone2),
+            dronesScans = DroneScans(
+                listOf
+                    (
+                    DroneScan(0, 0),
+                    DroneScan(0, 1),
+                    DroneScan(2, 2),
+                    DroneScan(2, 3),
+                )
+            )
+        )
+
+        // act
+        val result = drone0.isCreaturesOfKindInDrohneScan(turnData, creatures)
+
+        // assert
+        assertThat(result).isTrue()
     }
 
 }
