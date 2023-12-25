@@ -21,10 +21,9 @@ class GameLogicTest {
 
         // assert
         assertThat(commands).containsExactly(
-            "MOVE 2000 500 1 null SURFACE ALL SCANNED",
-            "MOVE 4000 500 1 null SURFACE ALL SCANNED"
+            "MOVE 2000 500 0 null SURFACE ALL SCANNED",
+            "MOVE 4000 500 0 null SURFACE ALL SCANNED"
         )
-
     }
 
 }

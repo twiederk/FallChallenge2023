@@ -1,4 +1,5 @@
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class DroneTest {
@@ -61,9 +62,13 @@ class DroneTest {
     }
 
     @Test
-    fun should_turn_on_power_light_when_in_habitat_zone() {
+    fun should_turn_on_power_light_when_in_habitat_zone_of_type_of_creature() {
         // arrange
         val drone = Drone(dronePosition = Point2D(0, 3_000))
+        drone.droneTarget = DroneTarget(
+            creatureToScan = Creature(type = 0),
+            targetPosition = Point2D(0, 0)
+        )
 
         // act
         val command = drone.light()
@@ -75,7 +80,40 @@ class DroneTest {
     @Test
     fun should_turn_off_power_light_when_not_in_habitat_zone() {
         // arrange
-        val drone = Drone(dronePosition = Point2D(0, 2_000))
+        val drone = Drone(dronePosition = Point2D(0, 3_000))
+        drone.droneTarget = DroneTarget(
+            creatureToScan = Creature(type = 1),
+            targetPosition = Point2D(0, 0)
+        )
+
+        // act
+        val light = drone.light()
+
+        // assert
+        assertThat(light).isEqualTo(0)
+    }
+
+    @Test
+    fun should_turn_off_power_light_when_no_creature_to_scan_is_set() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(0, 3_000))
+        drone.droneTarget = DroneTarget(
+            creatureToScan = null,
+            targetPosition = Point2D(0, 0)
+        )
+
+        // act
+        val light = drone.light()
+
+        // assert
+        assertThat(light).isEqualTo(0)
+    }
+
+    @Test
+    fun should_turn_off_power_light_when_no_droneTarget_is_set() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(0, 3_000))
+        drone.droneTarget = null
 
         // act
         val light = drone.light()
@@ -481,6 +519,7 @@ class DroneTest {
     }
 
     @Test
+    @Disabled("Feature is disabled")
     fun should_surface_when_all_creatures_of_one_type_are_in_drohne_scan() {
         // arrange
         val drone0 = Drone(0, Point2D(3000, 2000))
