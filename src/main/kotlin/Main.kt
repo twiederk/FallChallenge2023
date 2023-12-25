@@ -190,7 +190,7 @@ data class Drone(
 
     companion object {
         const val DRONE_SPEED = 600
-        const val DRONE_SECURITY_DISTANCE = 1000
+        const val DRONE_SECURITY_DISTANCE = 750
         const val SURFACE = 500
     }
 
