@@ -18,7 +18,7 @@ class DroneScansTest {
         )
 
         // act
-        val creaturesInDroneScans = droneScans.creaturesInDroneScans(listOf(0, 2))
+        val creaturesInDroneScans = droneScans.creatureIdsInDroneScans(listOf(0, 2))
 
         // assert
         assertThat(creaturesInDroneScans).containsExactly(1, 2, 3, 4)

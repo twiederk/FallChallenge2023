@@ -148,6 +148,12 @@ data class Creatures(
         return creatures.values.filter { it.type == -1 }.map { it.creatureId }
     }
 
+    fun onScreenIdsWithoutMonsters(radarBlips: List<RadarBlip>): List<Int> {
+        val creaturesOnRadar = radarBlips.map { it.creatureId }.toSet()
+        return creatures.values.filter { it.type != -1 }.filter { it.creatureId in creaturesOnRadar }
+            .map { it.creatureId }
+    }
+
     val values: Collection<Creature> = creatures.values
 }
 
@@ -205,7 +211,7 @@ data class Drone(
         val myDroneIds = turnData.myDrones.map { it.droneId }
         val creaturesToScanByOtherDrones =
             turnData.myDrones.filter { it.droneId != droneId }.mapNotNull { it.droneTarget?.creatureToScan?.creatureId }
-        val creaturesInMyDroneScan = turnData.dronesScans.creaturesInDroneScans(myDroneIds)
+        val creaturesInMyDroneScan = turnData.dronesScans.creatureIdsInDroneScans(myDroneIds)
         val sortedCreatures = creatures.values.asSequence()
             .filterNot { it.type == -1 } // no monsters
             .filterNot { it.creatureId in turnData.myScannedCreatures } // no creatures from saved scans
@@ -298,7 +304,14 @@ data class Drone(
         return dronePosition - monsterTargetPosition
     }
 
-    fun isCreaturesOfKindInDrohneScan(turnData: TurnData, creatures: Creatures): Boolean {
+    fun isAllCreaturesOfTypeInDrohneScan(turnData: TurnData, creatures: Creatures): Boolean {
+        val myDroneIds = turnData.myDrones.map { it.droneId }
+        val myCreatureIdsInDroneScans = turnData.dronesScans.creatureIdsInDroneScans(myDroneIds)
+        val myCreaturesOfDroneScans = creatures.values.filter { it.creatureId in myCreatureIdsInDroneScans }
+        val groupedAndCountedByType = myCreaturesOfDroneScans.groupingBy { it.type }.eachCount()
+        if (groupedAndCountedByType.values.contains(4)) {
+            return true
+        }
         return false
     }
 
@@ -375,7 +388,7 @@ class VisibleCreatures {
 class DroneScans(
     val dronesScans: List<DroneScan> = listOf()
 ) {
-    fun creaturesInDroneScans(droneIds: List<Int>): List<Int> {
+    fun creatureIdsInDroneScans(droneIds: List<Int>): List<Int> {
         return dronesScans.filter { it.droneId in droneIds }.map { it.creatureId }
     }
 }

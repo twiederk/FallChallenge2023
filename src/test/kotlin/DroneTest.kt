@@ -348,7 +348,7 @@ class DroneTest {
         )
 
         // act
-        val result = drone0.isCreaturesOfKindInDrohneScan(turnData, creatures)
+        val result = drone0.isAllCreaturesOfTypeInDrohneScan(turnData, creatures)
 
         // assert
         assertThat(result).isTrue()
