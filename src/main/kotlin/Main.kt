@@ -309,6 +309,7 @@ data class Drone(
     }
 
     fun isAllCreaturesOfTypeInDrohneScan(turnData: TurnData, creatures: Creatures): Boolean {
+        if (turnData.dronesScans.creatureIdsInDroneScans(listOf(droneId)).isEmpty()) return false
         val myDroneIds = turnData.myDrones.map { it.droneId }
         val myCreatureIdsInDroneScans = turnData.dronesScans.creatureIdsInDroneScans(myDroneIds)
         val myCreaturesOfDroneScans = creatures.values.filter { it.creatureId in myCreatureIdsInDroneScans }
