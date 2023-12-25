@@ -341,5 +341,60 @@ class DroneTest {
         )
     }
 
+    @Test
+    fun should_escape_vector_for_monster_bottom_left() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(1_000, 2_000))
+        val droneTargetPosition = Point2D(2581, 2429)
+        val monsterTargetPosition = Point2D(2100, 2900)
+
+        // act
+        val escapeVector = drone.escapeVector(droneTargetPosition, monsterTargetPosition)
+
+        // assert
+        assertThat(escapeVector).isEqualTo(Point2D(481, -471))
+    }
+
+    @Test
+    fun should_escape_vector_for_monster_bottom_right() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(1_000, 4_000))
+        val droneTargetPosition = Point2D(1424, 2424)
+        val monsterTargetPosition = Point2D(1900, 2900)
+
+        // act
+        val escapeVector = drone.escapeVector(droneTargetPosition, monsterTargetPosition)
+
+        // assert
+        assertThat(escapeVector).isEqualTo(Point2D(-476, -476))
+    }
+
+    @Test
+    fun should_escape_vector_for_monster_top_left() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(3_000, 4_000))
+        val droneTargetPosition = Point2D(2576, 3576)
+        val monsterTargetPosition = Point2D(2100, 3100)
+
+        // act
+        val escapeVector = drone.escapeVector(droneTargetPosition, monsterTargetPosition)
+
+        // assert
+        assertThat(escapeVector).isEqualTo(Point2D(476, 476))
+    }
+
+    @Test
+    fun should_escape_vector_for_monster_top_right() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(1_000, 4_000))
+        val droneTargetPosition = Point2D(1424, 3576)
+        val monsterTargetPosition = Point2D(1900, 3100)
+
+        // act
+        val escapeVector = drone.escapeVector(droneTargetPosition, monsterTargetPosition)
+
+        // assert
+        assertThat(escapeVector).isEqualTo(Point2D(-476, 476))
+    }
 
 }

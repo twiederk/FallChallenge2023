@@ -1,5 +1,4 @@
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -263,35 +262,35 @@ data class Drone(
         val droneVelocity = (droneTarget.targetPosition - dronePosition).scaledLength(DRONE_SPEED)
         System.err.println("droneVelocity = $droneVelocity")
         var droneTargetPosition = dronePosition + droneVelocity
-        System.err.println("droneTargetPosition = $droneTargetPosition")
+        System.err.println("* droneTargetPosition = $droneTargetPosition")
 
         for (monster in monsters) {
             System.err.println("monster.creaturePosition = ${monster.creaturePosition}")
             System.err.println("monster.creatureVelocity = ${monster.creatureVelocity}")
             val monsterTargetPosition = monster.creaturePosition + monster.creatureVelocity
-            System.err.println("monsterTargetPosition = $monsterTargetPosition")
+            System.err.println("* monsterTargetPosition = $monsterTargetPosition")
 
             System.err.println("distance = ${droneTargetPosition.distance(monsterTargetPosition)}")
 
             if (droneTargetPosition.distance(monsterTargetPosition) > DRONE_SECURITY_DISTANCE) {
                 continue // the monster is not after me
             }
-            val escapeVector = monsterTargetPosition - droneTargetPosition
-            System.err.println("escapeVector = $escapeVector")
+            val escapeVector = escapeVector(droneTargetPosition, monsterTargetPosition)
+            System.err.println("* escapeVector = $escapeVector")
 
             while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE) {
-                val newX = if (dronePosition.x < monster.creaturePosition.x) {
-                    droneTargetPosition.x - abs(escapeVector.x)
-                } else {
-                    droneTargetPosition.x + abs(escapeVector.x)
-                }
-                val newY = if (dronePosition.y < monster.creaturePosition.y) {
-                    droneTargetPosition.y - abs(escapeVector.y)
-                } else {
-                    droneTargetPosition.y + abs(escapeVector.y)
-                }
+//                val newX = if (dronePosition.x < monster.creaturePosition.x) {
+//                    droneTargetPosition.x - abs(escapeVector.x)
+//                } else {
+//                    droneTargetPosition.x + abs(escapeVector.x)
+//                }
+//                val newY = if (dronePosition.y < monster.creaturePosition.y) {
+//                    droneTargetPosition.y - abs(escapeVector.y)
+//                } else {
+//                    droneTargetPosition.y + abs(escapeVector.y)
+//                }
 
-                droneTargetPosition = Point2D(newX, newY)
+                droneTargetPosition += escapeVector
                 System.err.println("NEW droneTargetPosition = $droneTargetPosition")
             }
             return droneTarget.copy(
@@ -321,6 +320,10 @@ data class Drone(
         scannedCreatures.addAll(scansInMyDrones)
         val creaturesOnScreen = turnData.radarBlips.map { it.creatureId }.toSet()
         return scannedCreatures.size >= creaturesOnScreen.size
+    }
+
+    fun escapeVector(droneTargetPosition: Point2D, monsterTargetPosition: Point2D): Point2D {
+        return droneTargetPosition - monsterTargetPosition
     }
 
 }
