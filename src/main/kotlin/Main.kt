@@ -269,7 +269,7 @@ data class Drone(
             if (droneTargetPosition.distance(monsterTargetPosition) > DRONE_SECURITY_DISTANCE) {
                 continue // the monster is not after me
             }
-            val escapeVector = escapeVector(dronePosition, monsterTargetPosition)
+            val escapeVector = escapeVector(monsterTargetPosition)
             System.err.println("* escapeVector = $escapeVector")
 
             while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE) {
@@ -293,8 +293,8 @@ data class Drone(
         return 0
     }
 
-    fun escapeVector(droneTargetPosition: Point2D, monsterTargetPosition: Point2D): Point2D {
-        return droneTargetPosition - monsterTargetPosition
+    fun escapeVector(monsterTargetPosition: Point2D): Point2D {
+        return dronePosition - monsterTargetPosition
     }
 
 }
