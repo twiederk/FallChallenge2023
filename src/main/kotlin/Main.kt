@@ -285,8 +285,10 @@ data class Drone(
             val escapeVector = escapeVector(monsterTargetPosition)
             System.err.println("* escapeVector = $escapeVector")
 
-            while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE) {
+            var counter = 0
+            while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE && counter < 10) {
                 droneTargetPosition += escapeVector
+                counter++
                 System.err.println("NEW droneTargetPosition = $droneTargetPosition")
             }
             return droneTarget.copy(
