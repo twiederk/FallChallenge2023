@@ -328,7 +328,7 @@ class DroneTest {
     }
 
     @Test
-    fun should_surface_when_all_creatures_of_one_type_are_in_drohne_scan() {
+    fun should_return_true_when_all_creatures_of_one_type_are_in_drohne_scan() {
         // arrange
         val drone0 = Drone(0, Point2D(3000, 2000))
         val drone2 = Drone(2, Point2D(7000, 5000))
@@ -354,4 +354,41 @@ class DroneTest {
         assertThat(result).isTrue()
     }
 
+    @Test
+    fun should_surface_when_all_creatures_of_one_type_are_in_drohne_scan() {
+        // arrange
+        val drone0 = Drone(0, Point2D(3000, 2000))
+        val drone2 = Drone(2, Point2D(7000, 5000))
+        val turnData = TurnData(
+            myDrones = listOf(drone0, drone2),
+            dronesScans = DroneScans(
+                listOf(
+                    DroneScan(0, 0),
+                    DroneScan(0, 1),
+                    DroneScan(2, 2),
+                    DroneScan(2, 3),
+                )
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 0),
+                RadarBlip(0, 1),
+                RadarBlip(0, 2),
+                RadarBlip(0, 3),
+                RadarBlip(0, 4),
+                RadarBlip(0, 5),
+                RadarBlip(0, 6),
+                RadarBlip(0, 7),
+                RadarBlip(0, 8),
+                RadarBlip(0, 9),
+                RadarBlip(0, 10),
+            )
+        )
+        val creatures = Creatures(creatures = allCreatures)
+
+        // act
+        val command = drone0.turn(turnData, creatures)
+
+        // assert
+        assertThat(command).isEqualTo("MOVE 3000 500 0 null SURFACE TYPE SCANNED")
+    }
 }

@@ -191,8 +191,12 @@ data class Drone(
     var droneTarget: DroneTarget? = null
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
-        val creatureToScan = creatureToScan(turnData, creatures)
-        var droneTarget = droneTargetPosition(turnData, creatureToScan)
+        var droneTarget = if (isAllCreaturesOfTypeInDrohneScan(turnData, creatures)) {
+            DroneTarget(targetPosition = Point2D(dronePosition.x, SURFACE), comment = "SURFACE TYPE SCANNED")
+        } else {
+            val creatureToScan = creatureToScan(turnData, creatures)
+            droneTargetPosition(turnData, creatureToScan)
+        }
 
         if (!isTargetPositionSafe(turnData, creatures, droneTarget.targetPosition)) {
             val monsters = turnData.visibleCreatures.monsters(creatures)
@@ -226,7 +230,7 @@ data class Drone(
         return if (creatureToScan == null) {
             DroneTarget(
                 targetPosition = Point2D(dronePosition.x, SURFACE),
-                comment = "SURFACE"
+                comment = "SURFACE ALL SCANNED"
             )
         } else {
             val radarBlip =
