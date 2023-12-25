@@ -276,19 +276,19 @@ data class Drone(
             if (droneTargetPosition.distance(monsterTargetPosition) > DRONE_SECURITY_DISTANCE) {
                 continue // the monster is not after me
             }
-            val offset = monsterTargetPosition - droneTargetPosition
-            System.err.println("offset = $offset")
+            val escapeVector = monsterTargetPosition - droneTargetPosition
+            System.err.println("offset = $escapeVector")
 
             while (droneTargetPosition.distance(monsterTargetPosition) <= DRONE_SECURITY_DISTANCE) {
                 val newX = if (dronePosition.x < monster.creaturePosition.x) {
-                    droneTargetPosition.x - abs(offset.x)
+                    droneTargetPosition.x - abs(escapeVector.x)
                 } else {
-                    droneTargetPosition.x + abs(offset.x)
+                    droneTargetPosition.x + abs(escapeVector.x)
                 }
                 val newY = if (dronePosition.y < monster.creaturePosition.y) {
-                    droneTargetPosition.y - abs(offset.y)
+                    droneTargetPosition.y - abs(escapeVector.y)
                 } else {
-                    droneTargetPosition.y + abs(offset.y)
+                    droneTargetPosition.y + abs(escapeVector.y)
                 }
 
                 droneTargetPosition = Point2D(newX, newY)
