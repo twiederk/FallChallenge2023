@@ -328,7 +328,7 @@ class DroneTest {
     }
 
     @Test
-    fun should_return_true_when_all_creatures_of_one_type_are_in_drohne_scan() {
+    fun should_return_true_when_one_type_is_scanned() {
         // arrange
         val drone0 = Drone(0, Point2D(3000, 2000))
         val drone2 = Drone(2, Point2D(7000, 5000))
@@ -350,6 +350,37 @@ class DroneTest {
                 RadarBlip(0, 1),
                 RadarBlip(0, 2),
                 RadarBlip(0, 3),
+            )
+        )
+
+        // act
+        val result = drone0.isAllCreaturesOfTypeInDrohneScan(turnData, creatures)
+
+        // assert
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun should_return_true_when_one_type_is_scanned_and_one_creature_left_the_screen() {
+        // arrange
+        val drone0 = Drone(0, Point2D(3000, 2000))
+        val drone2 = Drone(2, Point2D(7000, 5000))
+
+        val creatures = Creatures(creatures = allCreatures)
+        val turnData = TurnData(
+            myDrones = listOf(drone0, drone2),
+            dronesScans = DroneScans(
+                listOf
+                    (
+                    DroneScan(0, 0),
+                    DroneScan(0, 1),
+                    DroneScan(2, 2),
+                )
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 0),
+                RadarBlip(0, 1),
+                RadarBlip(0, 2),
             )
         )
 
