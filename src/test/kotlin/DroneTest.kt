@@ -246,12 +246,15 @@ class DroneTest {
     }
 
     @Test
-    fun should_avoid_monster_when_monster_crosses_the_way_1() {
+    fun should_avoid_monster_when_monster_is_bottom_right() {
         // arrange
         val drone = Drone(dronePosition = Point2D(1_000, 2_000))
-        val droneTarget = DroneTarget(targetPosition = Point2D(5_000, 2_000))
+        val droneTarget = DroneTarget(targetPosition = Point2D(1_494, 2_494))
         val monsters = listOf(
-            VisibleCreature(creaturePosition = Point2D(1200, 1800), creatureVelocity = Point2D(200, 0))
+            VisibleCreature(
+                creaturePosition = Point2D(2_000, 3_000),
+                creatureVelocity = Point2D(-100, -100)
+            )
         )
 
         // act
@@ -260,21 +263,21 @@ class DroneTest {
         // assert
         assertThat(command).isEqualTo(
             DroneTarget(
-                targetPosition = Point2D(1_000, 2_600),
+                targetPosition = Point2D(948, 1_948),
                 comment = "HUNTED"
             )
         )
     }
 
     @Test
-    fun should_avoid_monster_when_monster_crosses_the_way_2() {
+    fun should_avoid_monster_when_monster_is_top_right() {
         // arrange
-        val drone = Drone(dronePosition = Point2D(7_088, 7_284))
-        val droneTarget = DroneTarget(targetPosition = Point2D(7_588, 6_784))
+        val drone = Drone(dronePosition = Point2D(1_000, 4_000))
+        val droneTarget = DroneTarget(targetPosition = Point2D(1_494, 3_506))
         val monsters = listOf(
             VisibleCreature(
-                creaturePosition = Point2D(7_840, 6_570),
-                creatureVelocity = Point2D(-19, -269)
+                creaturePosition = Point2D(2_000, 3_000),
+                creatureVelocity = Point2D(-100, 100)
             )
         )
 
@@ -284,7 +287,55 @@ class DroneTest {
         // assert
         assertThat(command).isEqualTo(
             DroneTarget(
-                targetPosition = Point2D(7203, 7419),
+                targetPosition = Point2D(948, 4052),
+                comment = "HUNTED"
+            )
+        )
+    }
+
+    @Test
+    fun should_avoid_monster_when_monster_is_bottom_left() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(3_000, 2_000))
+        val droneTarget = DroneTarget(targetPosition = Point2D(2_506, 2_506))
+        val monsters = listOf(
+            VisibleCreature(
+                creaturePosition = Point2D(2_000, 3_000),
+                creatureVelocity = Point2D(100, -100)
+            )
+        )
+
+        // act
+        val command = drone.avoidMonster(droneTarget, monsters)
+
+        // assert
+        assertThat(command).isEqualTo(
+            DroneTarget(
+                targetPosition = Point2D(1138, 3842),
+                comment = "HUNTED"
+            )
+        )
+    }
+
+    @Test
+    fun should_avoid_monster_when_monster_is_top_left() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(3_000, 4_000))
+        val droneTarget = DroneTarget(targetPosition = Point2D(2_506, 3_506))
+        val monsters = listOf(
+            VisibleCreature(
+                creaturePosition = Point2D(2_000, 3_000),
+                creatureVelocity = Point2D(100, 100)
+            )
+        )
+
+        // act
+        val command = drone.avoidMonster(droneTarget, monsters)
+
+        // assert
+        assertThat(command).isEqualTo(
+            DroneTarget(
+                targetPosition = Point2D(1148, 2148),
                 comment = "HUNTED"
             )
         )
