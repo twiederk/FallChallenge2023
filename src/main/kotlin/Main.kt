@@ -154,6 +154,12 @@ data class Creatures(
             .map { it.creatureId }
     }
 
+    fun ofType(type: Int, radarBlips: List<RadarBlip>): List<Int> {
+        val creaturesOnRadar = radarBlips.map { it.creatureId }.toSet()
+        return creatures.values.filter { it.creatureId in creaturesOnRadar }.filter { it.type == type }
+            .map { it.creatureId }
+    }
+
     val values: Collection<Creature> = creatures.values
 }
 
@@ -309,13 +315,31 @@ data class Drone(
     }
 
     fun isAllCreaturesOfTypeInDrohneScan(turnData: TurnData, creatures: Creatures): Boolean {
-        if (turnData.dronesScans.creatureIdsInDroneScans(listOf(droneId)).isEmpty()) return false
-        val myDroneIds = turnData.myDrones.map { it.droneId }
-        val myCreatureIdsInDroneScans = turnData.dronesScans.creatureIdsInDroneScans(myDroneIds)
-        val myCreaturesOfDroneScans = creatures.values.filter { it.creatureId in myCreatureIdsInDroneScans }
-        val groupedAndCountedByType = myCreaturesOfDroneScans.groupingBy { it.type }.eachCount()
-        if (groupedAndCountedByType.values.contains(4)) {
-            return true
+        val myScannedCreatureIds = turnData.dronesScans.creatureIdsInDroneScans(listOf(droneId))
+        if (myScannedCreatureIds.isEmpty()) {
+            return false
+        }
+        val myCreaturesOfDroneScans = creatures.values.filter { it.creatureId in myScannedCreatureIds }
+        val myGroupedAndCountedByType = myCreaturesOfDroneScans.groupingBy { it.type }.eachCount()
+
+        val otherDroneId = turnData.myDrones.filterNot { it.droneId == droneId }.first().droneId
+        val otherScannedCreatureIds = turnData.dronesScans.creatureIdsInDroneScans(listOf(otherDroneId))
+        val otherCreaturesOfDroneScans = creatures.values.filter { it.creatureId in otherScannedCreatureIds }
+        val otherGroupedAndCountedByType = otherCreaturesOfDroneScans.groupingBy { it.type }.eachCount()
+
+
+//        turnData.myScannedCreatures.map { creatures.creature(it) }.groupingBy { it.type }.eachCount()
+
+        for (type in 0..2) {
+            // if type is already saved => skip it
+            turnData.myScannedCreatures
+
+            val myCountOfCreaturesOfType = myGroupedAndCountedByType.getOrDefault(type, 0)
+            val otherCountOfCreaturesOfType = otherGroupedAndCountedByType.getOrDefault(type, 0)
+            val countOfCreaturesOfType = myCountOfCreaturesOfType + otherCountOfCreaturesOfType
+            if (countOfCreaturesOfType == 4) {
+                return true
+            }
         }
         return false
     }

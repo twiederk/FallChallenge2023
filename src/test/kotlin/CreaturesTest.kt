@@ -27,7 +27,7 @@ class CreaturesTest {
     @Test
     fun should_return_creatures_on_screen() {
         // arrange
-        val Creatures = Creatures(
+        val creatures = Creatures(
             creatures = mapOf(
                 0 to Creature(0, 0, 0),
                 1 to Creature(1, 1, 0),
@@ -45,10 +45,37 @@ class CreaturesTest {
         )
 
         // act
-        val creaturesOnScreen = Creatures.onScreenIdsWithoutMonsters(radarBlips)
+        val creaturesOnScreen = creatures.onScreenIdsWithoutMonsters(radarBlips)
 
         // assert
         assertThat(creaturesOnScreen).containsExactly(1, 2, 6)
+    }
+
+    @Test
+    fun should_return_all_creatures_on_screen_of_one_type() {
+        // arrange
+        val creatures = Creatures(
+            creatures = mapOf(
+                0 to Creature(0, 0, 0),
+                1 to Creature(1, 1, 0),
+                2 to Creature(2, 2, 0),
+                3 to Creature(3, 3, 0),
+                4 to Creature(4, 0, 1),
+                5 to Creature(5, 1, 1),
+                6 to Creature(6, 2, 1),
+            )
+        )
+        val radarBlips = listOf(
+            RadarBlip(0, 1),
+            RadarBlip(0, 2),
+            RadarBlip(0, 6),
+        )
+
+        // act
+        val creaturesOnScreenOfType = creatures.ofType(0, radarBlips)
+
+        // assert
+        assertThat(creaturesOnScreenOfType).containsExactly(1, 2)
 
     }
 }

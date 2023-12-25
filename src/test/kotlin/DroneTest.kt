@@ -383,6 +383,34 @@ class DroneTest {
     }
 
     @Test
+    fun should_surface_when_saved_and_own_would_complete_type_of_one_creature() {
+        // arrange
+        val drone0 = Drone(0, Point2D(3000, 2000))
+        val drone2 = Drone(2, Point2D(7000, 5000))
+
+        val creatures = Creatures(creatures = allCreatures)
+        val turnData = TurnData(
+            myDrones = listOf(drone0, drone2),
+            dronesScans = DroneScans(
+                listOf
+                    (
+                    DroneScan(2, 0),
+                    DroneScan(2, 1),
+                    DroneScan(2, 2),
+                    DroneScan(2, 3),
+                )
+            )
+        )
+
+        // act
+        val result = drone0.isAllCreaturesOfTypeInDrohneScan(turnData, creatures)
+
+        // assert
+        assertThat(result).isFalse()
+
+    }
+
+    @Test
     fun should_surface_when_all_creatures_of_one_type_are_in_drohne_scan() {
         // arrange
         val drone0 = Drone(0, Point2D(3000, 2000))
