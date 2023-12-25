@@ -344,6 +344,12 @@ class DroneTest {
                     DroneScan(2, 2),
                     DroneScan(2, 3),
                 )
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 0),
+                RadarBlip(0, 1),
+                RadarBlip(0, 2),
+                RadarBlip(0, 3),
             )
         )
 

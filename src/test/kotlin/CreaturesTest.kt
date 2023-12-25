@@ -72,7 +72,7 @@ class CreaturesTest {
         )
 
         // act
-        val creaturesOnScreenOfType = creatures.ofType(0, radarBlips)
+        val creaturesOnScreenOfType = creatures.ofTypeOnScreen(0, radarBlips)
 
         // assert
         assertThat(creaturesOnScreenOfType).containsExactly(1, 2)

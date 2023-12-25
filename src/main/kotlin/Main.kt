@@ -154,7 +154,7 @@ data class Creatures(
             .map { it.creatureId }
     }
 
-    fun ofType(type: Int, radarBlips: List<RadarBlip>): List<Int> {
+    fun ofTypeOnScreen(type: Int, radarBlips: List<RadarBlip>): List<Int> {
         val creaturesOnRadar = radarBlips.map { it.creatureId }.toSet()
         return creatures.values.filter { it.creatureId in creaturesOnRadar }.filter { it.type == type }
             .map { it.creatureId }
@@ -328,16 +328,23 @@ data class Drone(
         val otherGroupedAndCountedByType = otherCreaturesOfDroneScans.groupingBy { it.type }.eachCount()
 
 
-//        turnData.myScannedCreatures.map { creatures.creature(it) }.groupingBy { it.type }.eachCount()
-
         for (type in 0..2) {
             // if type is already saved => skip it
-            turnData.myScannedCreatures
+            val creaturesOfTypeOnScreen = creatures.ofTypeOnScreen(type, turnData.radarBlips)
+            if (creaturesOfTypeOnScreen.none { it !in turnData.myScannedCreatures }) {
+                continue
+            }
 
-            val myCountOfCreaturesOfType = myGroupedAndCountedByType.getOrDefault(type, 0)
-            val otherCountOfCreaturesOfType = otherGroupedAndCountedByType.getOrDefault(type, 0)
-            val countOfCreaturesOfType = myCountOfCreaturesOfType + otherCountOfCreaturesOfType
-            if (countOfCreaturesOfType == 4) {
+            val myScannedCreaturesCount = myGroupedAndCountedByType.getOrDefault(type, 0)
+            val otherScannedCreaturesCount = otherGroupedAndCountedByType.getOrDefault(type, 0)
+            val savedScannedCreaturesCount =
+                turnData.myScannedCreatures.map { creatures.creature(it) }.count { it.type == type }
+
+            val totalScannedCreatures =
+                myScannedCreaturesCount + otherScannedCreaturesCount + savedScannedCreaturesCount
+
+            val creaturesOfTypeOnScreenCount = creatures.ofTypeOnScreen(type, turnData.radarBlips).count()
+            if (totalScannedCreatures == creaturesOfTypeOnScreenCount) {
                 return true
             }
         }
