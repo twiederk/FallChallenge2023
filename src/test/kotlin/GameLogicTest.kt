@@ -7,6 +7,7 @@ class GameLogicTest {
     fun should_display_both_commands_when_two_drones_are_owned() {
         // arrange
         val turnData = TurnData(
+            turnNumber = 2,
             myDrones = listOf(
                 Drone(dronePosition = Point2D(2_000, 3_000)),
                 Drone(dronePosition = Point2D(4_000, 3_000)),

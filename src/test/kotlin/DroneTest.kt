@@ -24,6 +24,7 @@ class DroneTest {
         // arrange
         val drone = Drone(droneId = 0, dronePosition = Point2D(2_000, 3_000))
         val turnData = TurnData(
+            turnNumber = 2,
             myDrones = listOf(
                 drone,
                 Drone(droneId = 1, dronePosition = Point2D(4_000, 6_000))
@@ -555,5 +556,18 @@ class DroneTest {
 
         // assert
         assertThat(command).isEqualTo("MOVE 3000 500 0 null SURFACE TYPE SCANNED")
+    }
+
+    @Test
+    fun should_move_directly_down_when_in_first_turn() {
+        // arrange
+        val drone = Drone(dronePosition = Point2D(2000, 500))
+
+        // act
+        val command = drone.turn(TurnData(), Creatures())
+
+        // assert
+        assertThat(command).isEqualTo("MOVE 2000 1500 0")
+
     }
 }
