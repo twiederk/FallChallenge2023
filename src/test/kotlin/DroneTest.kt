@@ -80,9 +80,9 @@ class DroneTest {
     @Test
     fun should_turn_off_power_light_when_not_in_habitat_zone() {
         // arrange
-        val drone = Drone(dronePosition = Point2D(0, 3_000))
+        val drone = Drone(dronePosition = Point2D(0, 8_000))
         drone.droneTarget = DroneTarget(
-            creatureToScan = Creature(type = 1),
+            creatureToScan = Creature(type = 0),
             targetPosition = Point2D(0, 0)
         )
 
@@ -190,23 +190,23 @@ class DroneTest {
             )
         }
         val turnData = TurnData(
+            myScannedCreatures = listOf(),
             myDrones = listOf(
                 drone0,
                 drone1,
-            ),
-            myScannedCreatures = listOf(),
-            radarBlips = listOf(
-                RadarBlip(0, 0, "TL"),
-                RadarBlip(0, 1, "TL"),
-                RadarBlip(0, 2, "TL"),
-                RadarBlip(0, 4, "TL"),
-                RadarBlip(0, 5, "TL"),
             ),
             dronesScans = DroneScans(
                 listOf(
                     DroneScan(1, 1), // friendly drone
                     DroneScan(2, 2), // enemy drone
                 )
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 0, "TL"),
+                RadarBlip(0, 1, "TL"),
+                RadarBlip(0, 2, "TL"),
+                RadarBlip(0, 4, "TL"),
+                RadarBlip(0, 5, "TL"),
             )
         )
 
@@ -437,8 +437,8 @@ class DroneTest {
 
         val creatures = Creatures(creatures = allCreatures)
         val turnData = TurnData(
-            myDrones = listOf(drone0, drone2),
             myScannedCreatures = listOf(3),
+            myDrones = listOf(drone0, drone2),
             dronesScans = DroneScans(
                 listOf
                     (
