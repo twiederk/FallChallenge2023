@@ -26,4 +26,25 @@ class GameLogicTest {
         )
     }
 
+    @Test
+    fun should_init_with_turn_number_1() {
+
+        // act
+        val gameLogic = GameLogic(Creatures())
+
+        // assert
+        assertThat(gameLogic.turnNumber).isEqualTo(1)
+    }
+
+    @Test
+    fun should_increase_turn_number_by_1_every_turn() {
+        // arrange
+        val gameLogic = GameLogic(Creatures())
+
+        // act
+        gameLogic.turn(TurnData())
+
+        // assert
+        assertThat(gameLogic.turnNumber).isEqualTo(2)
+    }
 }

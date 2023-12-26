@@ -107,6 +107,7 @@ fun main() {
         }
         val turnData =
             TurnData(
+                turnNumber = gameLogic.turnNumber,
                 myScore,
                 foeScore,
                 myScannedCreatures,
@@ -125,8 +126,12 @@ fun main() {
 class GameLogic(
     private val creatures: Creatures
 ) {
+    var turnNumber: Int = 1
+
     fun turn(turnData: TurnData): List<String> {
-        return turnData.myDrones.map { it.turn(turnData, creatures) }
+        val commands = turnData.myDrones.map { it.turn(turnData, creatures) }
+        turnNumber++
+        return commands
     }
 }
 
@@ -170,6 +175,7 @@ data class Creature(
 )
 
 data class TurnData(
+    val turnNumber: Int = 1,
     val myScore: Int = 0,
     val foeScore: Int = 0,
     val myScannedCreatures: List<Int> = listOf(),
