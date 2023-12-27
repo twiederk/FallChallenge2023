@@ -137,7 +137,7 @@ class GameLogic(
         return commands
     }
 
-    fun sortScanLists(turnData: TurnData, creatures: Creatures): Map<Int, List<Int>> {
+    fun createScanLists(turnData: TurnData, creatures: Creatures): Map<Int, List<Int>> {
         val monsterIds = creatures.monsterIds()
         val associatedScansList: MutableList<Map<Int, Char>> = mutableListOf()
         for (droneId in turnData.myDrones.map { it.droneId }) {
@@ -171,6 +171,13 @@ class GameLogic(
             idOfLeftDrone to leftList,
             idOfRightDrone to rightList
         )
+    }
+
+    fun orderScanList(scanList: List<Int>, creatures: Creatures): List<Int> {
+        return creatures.values
+            .filter { it.creatureId in scanList }
+            .sortedBy { it.type }
+            .map { it.creatureId }
     }
 }
 
