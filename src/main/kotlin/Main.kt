@@ -124,14 +124,42 @@ fun main() {
 }
 
 class GameLogic(
-    private val creatures: Creatures
+    private val creatures: Creatures = Creatures()
 ) {
     var turnNumber: Int = 1
 
     fun turn(turnData: TurnData): List<String> {
+        if (turnData.turnNumber == 1) {
+            turnData.radarBlips.forEach { System.err.println(it) }
+        }
         val commands = turnData.myDrones.map { it.turn(turnData, creatures) }
         turnNumber++
         return commands
+    }
+
+    fun sortScanLists(turnData: TurnData, creatures: Creatures): List<List<Int>> {
+        val monsterIds = creatures.monsterIds()
+        val associatedScansList: MutableList<Map<Int, Char>> = mutableListOf()
+        for (droneId in turnData.myDrones.map { it.droneId }) {
+            val associatedScans = turnData.radarBlips
+                .filter { it.droneId == droneId }
+                .filter { it.creatureId !in monsterIds }
+                .associateBy({ it.creatureId }, { it.radar[1] })
+            associatedScansList.add(associatedScans)
+        }
+        val mergedScanLists: MutableMap<Int, String> = mutableMapOf()
+        for (key in associatedScansList[0].keys) {
+            val char1 = associatedScansList[0][key]
+            val char2 = associatedScansList[1][key]
+            mergedScanLists[key] = "$char1$char2"
+        }
+        val numberOfLL = mergedScanLists.values.count { it == "LL" }
+        val numberOfRR = mergedScanLists.values.count { it == "RR" }
+        if (numberOfLL < numberOfRR) {
+            val leftList = mergedScanLists.filter { it.value.contains("L") }.map { it.key }
+            val rightList = mergedScanLists.filter { it.key !in leftList }.map { it.key }
+        }
+        return emptyList()
     }
 }
 

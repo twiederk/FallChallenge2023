@@ -568,6 +568,75 @@ class DroneTest {
 
         // assert
         assertThat(command).isEqualTo("MOVE 2000 1500 0")
+    }
+
+    @Test
+    fun should_create_ordered_list_of_drones_to_scan_scenario_1() {
+
+        // arrange
+        val turnData = TurnData(
+            myDrones = listOf(
+                Drone(droneId = 0, dronePosition = Point2D(2000, 500)),
+                Drone(droneId = 2, dronePosition = Point2D(6000, 500)),
+            ),
+            radarBlips = listOf(
+                RadarBlip(droneId = 0, creatureId = 4, radar = "BL"),
+                RadarBlip(droneId = 0, creatureId = 5, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 6, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 7, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 8, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 9, radar = "BL"),
+                RadarBlip(droneId = 0, creatureId = 10, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 11, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 12, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 13, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 14, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 15, radar = "BR"),
+                RadarBlip(droneId = 0, creatureId = 16, radar = "BL"),
+                RadarBlip(droneId = 0, creatureId = 17, radar = "BR"),
+                RadarBlip(droneId = 2, creatureId = 4, radar = "BL"),
+                RadarBlip(droneId = 2, creatureId = 5, radar = "BR"),
+                RadarBlip(droneId = 2, creatureId = 6, radar = "BL"),
+                RadarBlip(droneId = 2, creatureId = 7, radar = "BR"),
+                RadarBlip(droneId = 2, creatureId = 8, radar = "BR"),
+                RadarBlip(droneId = 2, creatureId = 9, radar = "BL"),
+                RadarBlip(droneId = 2, creatureId = 10, radar = "BL"),
+                RadarBlip(droneId = 2, creatureId = 11, radar = "BR"),
+                RadarBlip(droneId = 2, creatureId = 12, radar = "BL"),
+                RadarBlip(droneId = 2, creatureId = 13, radar = "BR"),
+                RadarBlip(droneId = 2, creatureId = 14, radar = "BL"),
+                RadarBlip(droneId = 2, creatureId = 15, radar = "BR"),
+                RadarBlip(droneId = 2, creatureId = 16, radar = "BL"),
+                RadarBlip(droneId = 2, creatureId = 17, radar = "BR"),
+            )
+        )
+        val creatureList = allCreatures.values.map { it.copy(creatureId = it.creatureId + 4) }.toMutableList()
+        creatureList.add(Creature(creatureId = 16, color = -1, type = -1))
+        creatureList.add(Creature(creatureId = 17, color = -1, type = -1))
+        val creatures = Creatures(creatures = creatureList.associateBy { it.creatureId })
+
+        // act
+        val scanLists = GameLogic(creatures).sortScanLists(turnData, creatures)
+
+        // assert
+        assertThat(scanLists).hasSize(2)
+    }
+
+    @Test
+    @Disabled
+    fun should_return_the_drone_with_the_proper_starting_position_to_sort_the_fishes() {
+        // arrange
+        val turnData = TurnData(
+            myDrones = listOf(
+                Drone(droneId = 1, dronePosition = Point2D(2000, 500)),
+                Drone(droneId = 2, dronePosition = Point2D(6000, 500)),
+            ),
+        )
+
+        // act
+//        val drone = GameLogic().
+
+        // assert
 
     }
 }
