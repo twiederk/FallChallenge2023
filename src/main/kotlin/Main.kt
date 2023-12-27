@@ -127,11 +127,13 @@ class GameLogic(
     private val creatures: Creatures = Creatures()
 ) {
     var turnNumber: Int = 1
+    var initialScanLists: Map<Int, List<Int>> = mapOf()
 
     fun turn(turnData: TurnData): List<String> {
         if (turnData.turnNumber == 1) {
-            turnData.radarBlips.forEach { System.err.println(it) }
+            initialScanLists = initialScanLists(turnData, creatures)
         }
+        turnData.myDrones.forEach { it.initialScanList = initialScanLists[it.droneId] ?: listOf() }
         val commands = turnData.myDrones.map { it.turn(turnData, creatures) }
         turnNumber++
         return commands
@@ -253,6 +255,7 @@ data class Drone(
         const val SURFACE = 500
     }
 
+    var initialScanList: List<Int> = listOf()
     var droneTarget: DroneTarget? = null
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
@@ -268,7 +271,7 @@ data class Drone(
         }
         this.droneTarget = droneTarget
         val light = light()
-        return "MOVE ${droneTarget.targetPosition.x} ${droneTarget.targetPosition.y} $light ${droneTarget.creatureToScan} ${droneTarget.comment}"
+        return "MOVE ${droneTarget.targetPosition.x} ${droneTarget.targetPosition.y} $light $initialScanList"
     }
 
     fun creatureToScan(
