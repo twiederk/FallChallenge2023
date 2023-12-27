@@ -620,6 +620,8 @@ class DroneTest {
 
         // assert
         assertThat(scanLists).hasSize(2)
+        assertThat(scanLists[0]).containsOnly(4, 10, 6, 12, 9, 14)
+        assertThat(scanLists[2]).containsOnly(11, 5, 13, 7, 15, 8)
     }
 
     @Test

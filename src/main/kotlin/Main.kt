@@ -137,7 +137,7 @@ class GameLogic(
         return commands
     }
 
-    fun sortScanLists(turnData: TurnData, creatures: Creatures): List<List<Int>> {
+    fun sortScanLists(turnData: TurnData, creatures: Creatures): Map<Int, List<Int>> {
         val monsterIds = creatures.monsterIds()
         val associatedScansList: MutableList<Map<Int, Char>> = mutableListOf()
         for (droneId in turnData.myDrones.map { it.droneId }) {
@@ -155,11 +155,22 @@ class GameLogic(
         }
         val numberOfLL = mergedScanLists.values.count { it == "LL" }
         val numberOfRR = mergedScanLists.values.count { it == "RR" }
+        val leftList: List<Int>
+        val rightList: List<Int>
         if (numberOfLL < numberOfRR) {
-            val leftList = mergedScanLists.filter { it.value.contains("L") }.map { it.key }
-            val rightList = mergedScanLists.filter { it.key !in leftList }.map { it.key }
+            leftList = mergedScanLists.filter { it.value.contains("L") }.map { it.key }
+            rightList = mergedScanLists.filter { it.key !in leftList }.map { it.key }
+        } else {
+            rightList = mergedScanLists.filter { it.value.contains("R") }.map { it.key }
+            leftList = mergedScanLists.filter { it.key !in rightList }.map { it.key }
+
         }
-        return emptyList()
+        val idOfLeftDrone = turnData.myDrones.first { it.dronePosition.x < 5000 }.droneId
+        val idOfRightDrone = turnData.myDrones.first { it.dronePosition.x > 5000 }.droneId
+        return mapOf(
+            idOfLeftDrone to leftList,
+            idOfRightDrone to rightList
+        )
     }
 }
 
