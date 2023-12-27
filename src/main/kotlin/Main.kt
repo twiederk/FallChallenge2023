@@ -179,6 +179,13 @@ class GameLogic(
             .sortedBy { it.type }
             .map { it.creatureId }
     }
+
+    fun initialScanLists(turnData: TurnData, creatures: Creatures): Map<Int, List<Int>> {
+        val scanLists = createScanLists(turnData, creatures)
+        val orderedScanLists = mutableMapOf<Int, List<Int>>()
+        scanLists.forEach { orderedScanLists[it.key] = orderScanList(it.value, creatures) }
+        return scanLists
+    }
 }
 
 data class VisibleCreature(

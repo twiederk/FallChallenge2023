@@ -681,7 +681,7 @@ class DroneTest {
 
 
     @Test
-    fun should_create_ordered_list_of_drones_to_scan_scenario_1() {
+    fun should_create_initial_scan_lists_scenario_1() {
 
         // arrange
         val turnData = TurnData(
@@ -694,7 +694,7 @@ class DroneTest {
         val creatures = Creatures(creatures = creaturesScenario1.associateBy { it.creatureId })
 
         // act
-        val scanLists = GameLogic(creatures).createScanLists(turnData, creatures)
+        val scanLists = GameLogic(creatures).initialScanLists(turnData, creatures)
 
         // assert
         assertThat(scanLists).hasSize(2)
