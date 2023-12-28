@@ -23,6 +23,7 @@ class DroneTest {
     fun should_scan_next_creature() {
         // arrange
         val drone = Drone(droneId = 0, dronePosition = Point2D(2_000, 3_000))
+        drone.initialScanList = listOf(0, 3, 1, 2)
         val turnData = TurnData(
             turnNumber = 2,
             myDrones = listOf(

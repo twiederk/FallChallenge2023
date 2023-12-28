@@ -256,13 +256,14 @@ data class Drone(
     }
 
     var initialScanList: List<Int> = listOf()
+    var scanList: List<Int> = listOf()
     var droneTarget: DroneTarget? = null
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
         if (turnData.turnNumber == 1) {
             return "MOVE ${dronePosition.x} ${dronePosition.y + 1000} 0"
         }
-        val creatureToScan = creatureToScan(turnData, creatures)
+        val creatureToScan = creatureToScanFromInitialScanList(turnData, creatures)
         var droneTarget = droneTargetPosition(turnData, creatureToScan)
 
         if (!isTargetPositionSafe(turnData, creatures, droneTarget.targetPosition)) {
@@ -271,7 +272,7 @@ data class Drone(
         }
         this.droneTarget = droneTarget
         val light = light()
-        return "MOVE ${droneTarget.targetPosition.x} ${droneTarget.targetPosition.y} $light $initialScanList ${droneTarget.comment}"
+        return "MOVE ${droneTarget.targetPosition.x} ${droneTarget.targetPosition.y} $light $scanList ${droneTarget.comment}"
     }
 
     fun creatureToScan(
@@ -300,6 +301,7 @@ data class Drone(
             .filter { it in creaturesOnRadar } // only creatures on radar (screen)
             .filter { it !in turnData.myScannedCreatures } // no creatures from saved scans
             .filter { it !in allDroneScans } // no creatures in drone scans
+        this.scanList = scanList
         val creatureId = scanList.firstOrNull() ?: return null
         return creatures.creature(creatureId)
     }
