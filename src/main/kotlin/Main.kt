@@ -186,7 +186,7 @@ class GameLogic(
         val scanLists = createScanLists(turnData, creatures)
         val orderedScanLists = mutableMapOf<Int, List<Int>>()
         scanLists.forEach { orderedScanLists[it.key] = orderScanList(it.value, creatures) }
-        return scanLists
+        return orderedScanLists
     }
 }
 
@@ -261,7 +261,7 @@ data class Drone(
 
     fun turn(turnData: TurnData, creatures: Creatures): String {
         if (turnData.turnNumber == 1) {
-            return "MOVE ${dronePosition.x} ${dronePosition.y + 1000} 0"
+            return "MOVE ${dronePosition.x} ${dronePosition.y + 1000} 0 $initialScanList"
         }
         val creatureToScan = creatureToScanFromInitialScanList(turnData, creatures)
         var droneTarget = droneTargetPosition(turnData, creatureToScan)
