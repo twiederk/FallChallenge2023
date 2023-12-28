@@ -284,13 +284,24 @@ data class Drone(
             turnData.myDrones.filter { it.droneId != droneId }.mapNotNull { it.droneTarget?.creatureToScan?.creatureId }
         val creaturesInMyDroneScan = turnData.dronesScans.creatureIdsInDroneScans(myDroneIds)
         val sortedCreatures = creatures.values.asSequence()
-            .filterNot { it.type == -1 } // no monsters
-            .filterNot { it.creatureId in turnData.myScannedCreatures } // no creatures from saved scans
-            .filterNot { it.creatureId in creaturesInMyDroneScan } // no creatures form scans in drone
-            .filterNot { it.creatureId in creaturesToScanByOtherDrones } // no creatures to scan from my other drones
+            .filter { it.type != -1 } // no monsters
+            .filter { it.creatureId !in turnData.myScannedCreatures } // no creatures from saved scans
+            .filter { it.creatureId !in creaturesInMyDroneScan } // no creatures form scans in drone
+            .filter { it.creatureId !in creaturesToScanByOtherDrones } // no creatures to scan from my other drones
             .filter { it.creatureId in creaturesOnRadar } // only creatures on radar (screen)
             .sortedBy { it.type }.toList()
         return sortedCreatures.firstOrNull()
+    }
+
+    fun creatureToScanFromInitialScanList(turnData: TurnData, creatures: Creatures): Creature? {
+        val creaturesOnRadar = turnData.radarBlips.map { it.creatureId }.toSet()
+        val allDroneScans = turnData.dronesScans.creatureIdsInDroneScans(turnData.myDrones.map { it.droneId })
+        val scanList = initialScanList
+            .filter { it in creaturesOnRadar } // only creatures on radar (screen)
+            .filter { it !in turnData.myScannedCreatures } // no creatures from saved scans
+            .filter { it !in allDroneScans } // no creatures in drone scans
+        val creatureId = scanList.firstOrNull() ?: return null
+        return creatures.creature(creatureId)
     }
 
     fun droneTargetPosition(turnData: TurnData, creatureToScan: Creature?): DroneTarget {

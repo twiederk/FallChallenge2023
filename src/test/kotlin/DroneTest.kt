@@ -58,7 +58,45 @@ class DroneTest {
         val command = drone.turn(turnData, creatures)
 
         // assert
-        assertThat(command).isEqualTo("MOVE 1500 2500 1 ${creatures.creature(3)} TL")
+        assertThat(command).isEqualTo("MOVE 1500 2500 1 [3, 1, 2] TL")
+    }
+
+    @Test
+    fun should_scan_next_creature_initialScanList() {
+        // arrange
+        val drone0 = Drone(droneId = 0, dronePosition = Point2D(2000, 500))
+        drone0.initialScanList = listOf(
+            4, // left screen
+            10, // already in saved scans
+            6, // already in my own drone scans
+            12, // already in other drone scans
+            9, 14
+        )
+        val drone2 = Drone(droneId = 2, dronePosition = Point2D(6000, 500))
+        val creatures = Creatures(creatures = GameLogicTest.creaturesScenario1.associateBy { it.creatureId })
+        val turnData = TurnData(
+            myDrones = listOf(drone0, drone2),
+            myScannedCreatures = listOf(10),
+            dronesScans = DroneScans(
+                listOf(
+                    DroneScan(0, 6),
+                    DroneScan(2, 12),
+                )
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 10, "BR"),
+                RadarBlip(0, 6, "BR"),
+                RadarBlip(0, 12, "BR"),
+                RadarBlip(0, 9, "BR"),
+                RadarBlip(0, 14, "BR"),
+            )
+        )
+
+        // act
+        val creatureToScan = drone0.creatureToScanFromInitialScanList(turnData, creatures)
+
+        // assert
+        assertThat(creatureToScan?.creatureId).isEqualTo(9)
 
     }
 

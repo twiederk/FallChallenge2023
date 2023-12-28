@@ -3,6 +3,117 @@ import org.junit.jupiter.api.Test
 
 class GameLogicTest {
 
+    companion object {
+        val creaturesScenario1 = listOf(
+            Creature(creatureId = 4, type = 0),
+            Creature(creatureId = 5, type = 0),
+            Creature(creatureId = 6, type = 1),
+            Creature(creatureId = 7, type = 1),
+            Creature(creatureId = 8, type = 2),
+            Creature(creatureId = 9, type = 2),
+            Creature(creatureId = 10, type = 0),
+            Creature(creatureId = 11, type = 0),
+            Creature(creatureId = 12, type = 1),
+            Creature(creatureId = 13, type = 1),
+            Creature(creatureId = 14, type = 2),
+            Creature(creatureId = 15, type = 2),
+            Creature(creatureId = 16, type = -1),
+            Creature(creatureId = 17, type = -1),
+        )
+
+        private val radarBlipsScenario1 = listOf(
+            RadarBlip(droneId = 0, creatureId = 4, radar = "BL"),
+            RadarBlip(droneId = 0, creatureId = 5, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 6, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 7, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 8, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 9, radar = "BL"),
+            RadarBlip(droneId = 0, creatureId = 10, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 11, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 12, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 13, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 14, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 15, radar = "BR"),
+            RadarBlip(droneId = 0, creatureId = 16, radar = "BL"),
+            RadarBlip(droneId = 0, creatureId = 17, radar = "BR"),
+            RadarBlip(droneId = 2, creatureId = 4, radar = "BL"),
+            RadarBlip(droneId = 2, creatureId = 5, radar = "BR"),
+            RadarBlip(droneId = 2, creatureId = 6, radar = "BL"),
+            RadarBlip(droneId = 2, creatureId = 7, radar = "BR"),
+            RadarBlip(droneId = 2, creatureId = 8, radar = "BR"),
+            RadarBlip(droneId = 2, creatureId = 9, radar = "BL"),
+            RadarBlip(droneId = 2, creatureId = 10, radar = "BL"),
+            RadarBlip(droneId = 2, creatureId = 11, radar = "BR"),
+            RadarBlip(droneId = 2, creatureId = 12, radar = "BL"),
+            RadarBlip(droneId = 2, creatureId = 13, radar = "BR"),
+            RadarBlip(droneId = 2, creatureId = 14, radar = "BL"),
+            RadarBlip(droneId = 2, creatureId = 15, radar = "BR"),
+            RadarBlip(droneId = 2, creatureId = 16, radar = "BL"),
+            RadarBlip(droneId = 2, creatureId = 17, radar = "BR"),
+        )
+
+        private val creaturesScenario2 = listOf(
+            Creature(creatureId = 4, type = 0),
+            Creature(creatureId = 5, type = 0),
+            Creature(creatureId = 6, type = 1),
+            Creature(creatureId = 7, type = 1),
+            Creature(creatureId = 8, type = 2),
+            Creature(creatureId = 9, type = 2),
+            Creature(creatureId = 10, type = 0),
+            Creature(creatureId = 11, type = 0),
+            Creature(creatureId = 12, type = 1),
+            Creature(creatureId = 13, type = 1),
+            Creature(creatureId = 14, type = 2),
+            Creature(creatureId = 15, type = 2),
+            Creature(creatureId = 16, type = -1),
+            Creature(creatureId = 17, type = -1),
+            Creature(creatureId = 18, type = -1),
+            Creature(creatureId = 19, type = -1),
+            Creature(creatureId = 20, type = -1),
+            Creature(creatureId = 21, type = -1),
+        )
+
+        private val radarBlipsScenario2 = listOf(
+            RadarBlip(droneId = 1, creatureId = 4, radar = "BR"),
+            RadarBlip(droneId = 1, creatureId = 5, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 6, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 7, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 8, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 9, radar = "BR"),
+            RadarBlip(droneId = 1, creatureId = 10, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 11, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 12, radar = "BR"),
+            RadarBlip(droneId = 1, creatureId = 13, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 14, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 15, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 16, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 17, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 18, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 19, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 20, radar = "BL"),
+            RadarBlip(droneId = 1, creatureId = 21, radar = "BL"),
+
+            RadarBlip(droneId = 3, creatureId = 4, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 5, radar = "BL"),
+            RadarBlip(droneId = 3, creatureId = 6, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 7, radar = "BL"),
+            RadarBlip(droneId = 3, creatureId = 8, radar = "BL"),
+            RadarBlip(droneId = 3, creatureId = 9, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 10, radar = "BL"),
+            RadarBlip(droneId = 3, creatureId = 11, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 12, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 13, radar = "BL"),
+            RadarBlip(droneId = 3, creatureId = 14, radar = "BL"),
+            RadarBlip(droneId = 3, creatureId = 15, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 16, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 17, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 18, radar = "BL"),
+            RadarBlip(droneId = 3, creatureId = 19, radar = "BR"),
+            RadarBlip(droneId = 3, creatureId = 20, radar = "BL"),
+            RadarBlip(droneId = 3, creatureId = 21, radar = "BR"),
+        )
+    }
+
     @Test
     fun should_display_both_commands_when_two_drones_are_owned() {
         // arrange
@@ -57,114 +168,6 @@ class GameLogicTest {
         assertThat(gameLogic.turnNumber).isEqualTo(2)
     }
 
-    private val radarBlipsScenario1 = listOf(
-        RadarBlip(droneId = 0, creatureId = 4, radar = "BL"),
-        RadarBlip(droneId = 0, creatureId = 5, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 6, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 7, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 8, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 9, radar = "BL"),
-        RadarBlip(droneId = 0, creatureId = 10, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 11, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 12, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 13, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 14, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 15, radar = "BR"),
-        RadarBlip(droneId = 0, creatureId = 16, radar = "BL"),
-        RadarBlip(droneId = 0, creatureId = 17, radar = "BR"),
-        RadarBlip(droneId = 2, creatureId = 4, radar = "BL"),
-        RadarBlip(droneId = 2, creatureId = 5, radar = "BR"),
-        RadarBlip(droneId = 2, creatureId = 6, radar = "BL"),
-        RadarBlip(droneId = 2, creatureId = 7, radar = "BR"),
-        RadarBlip(droneId = 2, creatureId = 8, radar = "BR"),
-        RadarBlip(droneId = 2, creatureId = 9, radar = "BL"),
-        RadarBlip(droneId = 2, creatureId = 10, radar = "BL"),
-        RadarBlip(droneId = 2, creatureId = 11, radar = "BR"),
-        RadarBlip(droneId = 2, creatureId = 12, radar = "BL"),
-        RadarBlip(droneId = 2, creatureId = 13, radar = "BR"),
-        RadarBlip(droneId = 2, creatureId = 14, radar = "BL"),
-        RadarBlip(droneId = 2, creatureId = 15, radar = "BR"),
-        RadarBlip(droneId = 2, creatureId = 16, radar = "BL"),
-        RadarBlip(droneId = 2, creatureId = 17, radar = "BR"),
-    )
-
-    private val creaturesScenario1 = listOf(
-        Creature(creatureId = 4, type = 0),
-        Creature(creatureId = 5, type = 0),
-        Creature(creatureId = 6, type = 1),
-        Creature(creatureId = 7, type = 1),
-        Creature(creatureId = 8, type = 2),
-        Creature(creatureId = 9, type = 2),
-        Creature(creatureId = 10, type = 0),
-        Creature(creatureId = 11, type = 0),
-        Creature(creatureId = 12, type = 1),
-        Creature(creatureId = 13, type = 1),
-        Creature(creatureId = 14, type = 2),
-        Creature(creatureId = 15, type = 2),
-        Creature(creatureId = 16, type = -1),
-        Creature(creatureId = 17, type = -1),
-    )
-
-    private val radarBlipsScenario2 = listOf(
-        RadarBlip(droneId = 1, creatureId = 4, radar = "BR"),
-        RadarBlip(droneId = 1, creatureId = 5, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 6, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 7, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 8, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 9, radar = "BR"),
-        RadarBlip(droneId = 1, creatureId = 10, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 11, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 12, radar = "BR"),
-        RadarBlip(droneId = 1, creatureId = 13, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 14, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 15, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 16, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 17, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 18, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 19, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 20, radar = "BL"),
-        RadarBlip(droneId = 1, creatureId = 21, radar = "BL"),
-
-        RadarBlip(droneId = 3, creatureId = 4, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 5, radar = "BL"),
-        RadarBlip(droneId = 3, creatureId = 6, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 7, radar = "BL"),
-        RadarBlip(droneId = 3, creatureId = 8, radar = "BL"),
-        RadarBlip(droneId = 3, creatureId = 9, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 10, radar = "BL"),
-        RadarBlip(droneId = 3, creatureId = 11, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 12, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 13, radar = "BL"),
-        RadarBlip(droneId = 3, creatureId = 14, radar = "BL"),
-        RadarBlip(droneId = 3, creatureId = 15, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 16, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 17, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 18, radar = "BL"),
-        RadarBlip(droneId = 3, creatureId = 19, radar = "BR"),
-        RadarBlip(droneId = 3, creatureId = 20, radar = "BL"),
-        RadarBlip(droneId = 3, creatureId = 21, radar = "BR"),
-    )
-
-    private val creaturesScenario2 = listOf(
-        Creature(creatureId = 4, type = 0),
-        Creature(creatureId = 5, type = 0),
-        Creature(creatureId = 6, type = 1),
-        Creature(creatureId = 7, type = 1),
-        Creature(creatureId = 8, type = 2),
-        Creature(creatureId = 9, type = 2),
-        Creature(creatureId = 10, type = 0),
-        Creature(creatureId = 11, type = 0),
-        Creature(creatureId = 12, type = 1),
-        Creature(creatureId = 13, type = 1),
-        Creature(creatureId = 14, type = 2),
-        Creature(creatureId = 15, type = 2),
-        Creature(creatureId = 16, type = -1),
-        Creature(creatureId = 17, type = -1),
-        Creature(creatureId = 18, type = -1),
-        Creature(creatureId = 19, type = -1),
-        Creature(creatureId = 20, type = -1),
-        Creature(creatureId = 21, type = -1),
-    )
 
 
     @Test
@@ -202,7 +205,7 @@ class GameLogicTest {
     }
 
     @Test
-    fun should_create_ordered_list_of_drones_to_scan_scenario_2() {
+    fun should_create_initial_scan_lists_scenario_2() {
 
         // arrange
         val turnData = TurnData(
