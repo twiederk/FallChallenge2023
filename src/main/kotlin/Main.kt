@@ -297,10 +297,21 @@ data class Drone(
     fun creatureToScanFromInitialScanList(turnData: TurnData, creatures: Creatures): Creature? {
         val creaturesOnRadar = turnData.radarBlips.map { it.creatureId }.toSet()
         val allDroneScans = turnData.dronesScans.creatureIdsInDroneScans(turnData.myDrones.map { it.droneId })
-        val scanList = initialScanList
+        var scanList = initialScanList
             .filter { it in creaturesOnRadar } // only creatures on radar (screen)
             .filter { it !in turnData.myScannedCreatures } // no creatures from saved scans
             .filter { it !in allDroneScans } // no creatures in drone scans
+        if (scanList.isEmpty()) {
+            // check if all scans are saved
+            if (initialScanList.none { it !in turnData.myScannedCreatures }) {
+                // use scan list of other drone
+                val otherInitialScanList = turnData.myDrones.first { it.droneId != droneId }.initialScanList
+                scanList = otherInitialScanList
+                    .filter { it in creaturesOnRadar } // only creatures on radar (screen)
+                    .filter { it !in turnData.myScannedCreatures } // no creatures from saved scans
+                    .filter { it !in allDroneScans } // no creatures in drone scans
+            }
+        }
         this.scanList = scanList
         val creatureId = scanList.firstOrNull() ?: return null
         return creatures.creature(creatureId)

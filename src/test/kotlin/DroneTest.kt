@@ -98,6 +98,47 @@ class DroneTest {
 
         // assert
         assertThat(creatureToScan?.creatureId).isEqualTo(9)
+    }
+
+    @Test
+    fun should_help_other_drone_when_all_my_scans_are_saved() {
+        // arrange
+        val drone0 = Drone(droneId = 0, dronePosition = Point2D(2000, 500))
+        drone0.initialScanList = listOf(1, 2, 3, 4, 5, 6) // all scans are saved
+
+        val drone2 = Drone(droneId = 2, dronePosition = Point2D(6000, 500))
+        drone2.initialScanList = listOf(7, 8, 9, 10, 11, 12) // 1st is saved, 2nd in drone scan, third left screen
+
+        val creatures = Creatures(creatures = GameLogicTest.creaturesScenario1.associateBy { it.creatureId })
+        val turnData = TurnData(
+            myDrones = listOf(drone0, drone2),
+            myScannedCreatures = listOf(1, 2, 3, 4, 5, 6, 7),
+            dronesScans = DroneScans(
+                listOf(
+                    DroneScan(2, 8),
+                )
+            ),
+            radarBlips = listOf(
+                RadarBlip(0, 1, "BR"),
+                RadarBlip(0, 2, "BR"),
+                RadarBlip(0, 3, "BR"),
+                RadarBlip(0, 4, "BR"),
+                RadarBlip(0, 5, "BR"),
+                RadarBlip(0, 6, "BR"),
+                RadarBlip(0, 7, "BR"),
+                RadarBlip(0, 8, "BR"),
+                RadarBlip(0, 10, "BR"),
+                RadarBlip(0, 11, "BR"),
+                RadarBlip(0, 12, "BR"),
+            )
+
+        )
+
+        // act
+        val creatureToScan = drone0.creatureToScanFromInitialScanList(turnData, creatures)
+
+        // assert
+        assertThat(creatureToScan?.creatureId).isEqualTo(10)
 
     }
 
@@ -606,7 +647,7 @@ class DroneTest {
         val command = drone.turn(TurnData(), Creatures())
 
         // assert
-        assertThat(command).isEqualTo("MOVE 2000 1500 0")
+        assertThat(command).isEqualTo("MOVE 2000 1500 0 []")
     }
 
 
