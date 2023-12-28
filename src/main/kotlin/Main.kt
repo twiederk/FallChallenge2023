@@ -271,7 +271,7 @@ data class Drone(
         }
         this.droneTarget = droneTarget
         val light = light()
-        return "MOVE ${droneTarget.targetPosition.x} ${droneTarget.targetPosition.y} $light $initialScanList"
+        return "MOVE ${droneTarget.targetPosition.x} ${droneTarget.targetPosition.y} $light $initialScanList ${droneTarget.comment}"
     }
 
     fun creatureToScan(
